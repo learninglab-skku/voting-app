@@ -1,0 +1,117 @@
+<!doctype html>
+{% load static from staticfiles %}
+{% load mathjax %}
+{% comment %}
+{% load course_extras %}
+{% endcomment %}
+<html class="no-js" lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Stochastic Dynamics Lab {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/foundation.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    {% mathjax_scripts %}
+  </head>
+  <body>
+    <header>
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <ul class="dropdown menu" data-dropdown-menu>
+            <li class="menu-text"><strong>Stochastic Dynamics Lab</strong></li>
+              <a href="#">Research</a>
+              <a href="#">Publication</a>
+            <!-- <li>
+              <ul class="menu vertical">
+                <li><a href="#">One</a></li>
+                <li><a href="#">Two</a></li>
+                <li><a href="#">Three</a></li>
+              </ul>
+            </li> -->
+            <!-- <li><a href="#">Courses</a></li> -->
+            <!-- <li><a href="#">Projects</a></li>
+            <li><a href="#">People</a></li> -->
+            <li><a href="#">Repository</a></li>
+          </ul>
+        </div>
+        <div class="top-bar-right">
+          <ul class="dropdown menu" data-dropdown-menu>
+            {% if user.is_authenticated %}
+            <li class="menu-text"> Welcome  <b>{{ user.username }}</b>!</li>
+            <li><a href="{% url 'logout' %}">logout</a></li>
+            {% else %}
+            <li> <a href="{% url 'login' %}">login</a> </li>
+            {% comment %}
+              <a href="{% url 'accounts:signup' %}">signup</a>
+            {% endcomment %}
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+          <div class="large-12 cell">
+
+          <nav aria-label="You are here:" role="navigation">
+            <ul class="breadcrumbs">
+              {% comment %}
+              <li><a href="#">Home</a></li>
+              <li><a href="{% url 'courses:list' %}">Courses</a></li>
+              <li><a href="{% url 'votes:list' %}">Questions</a></li>
+              {% endcomment %}
+              <li>
+                <span class="show-for-sr">Current: </span> Home
+              </li>
+              <li><a href="{% url 'courses:list' %}">Courses</a></li>
+              <li class="disabled">Questions</a></li>
+              <li><a href="{% url 'votes:voting' %}">Voting</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>     
+     </div>
+    </header>
+
+    <div class="grid-container">
+      <div class="grid-x grid-padding-x">
+      </div>
+      {% if messages %}
+            <div class="row">
+                <div class="small-6 small-centered columns">
+                    {% for message in messages %}
+                        <div data-alert class="callout {{ message.tags }}">
+                            {{ message }}
+                            <a href="#" class="close">&times;</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            </div>
+      {% endif %}
+      <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+          <div class="large-12 cell">
+          {% block content %}{% endblock %}
+          </div>
+        </div>
+      </div>
+      <footer class="row columns">
+          <hr/>
+          <div class="small-6 columns">
+              <p>&copy; The Stochastic Dynamics Lab Site</p>
+          </div>
+      </footer>
+      
+    <script src="{% static 'js/vendor/jquery.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <!-- <script src="https//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script> -->
+    <script src="{% static 'js/vendor/what-input.js' %}"></script>
+    <script src="{% static 'js/vendor/foundation.js' %}"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block javascript %}{% endblock %}
+  </body>
+</html>

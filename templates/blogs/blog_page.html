@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-blogpage{% endblock %}
+
+{% block content %}
+<div class="posts-panel">
+    <section class="posts-list">
+        <div class="post-item">
+            <div class="post-text">
+                <h3 class="post-title">{{ page.title }}</h3>
+                <div class="post-meta">
+                        <span class="meta"><span class="meta-icon fa fa-user-circle" aria-hidden="true"></span><a class="meta-text">Steve Jobs</a></span>
+                        <span class="meta"><span class="meta-icon fa fa-clock" aria-hidden="true"></span><span class="meta-text">{{page.date}}</span></span>
+                </div>
+
+                <div class="intro">{{ page.intro }}</div>
+
+                {{ page.body|richtext }}
+
+                {% for item in page.gallery_images.all %}
+                    <div style="float: left; margin: 10px">
+                        {% image item.image fill-320x240 %}
+                        <p>{{ item.caption }}</p>
+                    </div>
+                {% endfor %}
+
+                {% if page.tags.all.count %}
+                <div class="tags">
+                    <p><strong>Tags:</strong>
+                    {% for tag in page.tags.all %}
+                        <a href="{% slugurl 'tags' %}?tag={{ tag }}"><button type="button">{{ tag }}</button></a>
+                    {% endfor %}
+                    </p>
+                </div>
+                {% endif %}
+
+                {% with categories=page.categories.all %}
+                    {% if categories %}
+                        <p><strong>Posted in:</strong></p>
+                        <ul>
+                            {% for category in categories %}
+                                <li style="display: inline">
+                                    {% image category.icon fill-32x32 style="vertical-align: middle" %}
+                                    {{ category.name }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+
+                <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
+            </div>
+        </div>
+    </section>   
+{% endblock %}

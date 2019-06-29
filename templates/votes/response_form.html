@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %} Vote | {{block.super}} {% endblock %}
+
+{% block content %}
+<div class="row columns">
+    {{ block.super }}
+    <h3> What do you think? </h3>
+    <p> This is your {% if not form.instance.pk %} first {% else %} second {% endif %} vote. </p>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit", class="button", value="Vote">
+    </form>
+</div>
+{% endblock %}

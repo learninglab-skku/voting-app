@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %} Vote Question | {{block.super}} {% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="small-4 columns">
+            <img src="{{ question.contents.url }}">
+        </div>
+    </div>
+    <!-- <div id="results">
+        {% include "votes/partial_results.html" %}
+    </div> -->
+    <!-- <div id="flashMessage">
+        This is jQuery trial!
+    </div> -->
+    <!-- <p>
+            <div class="vote1">
+                    1st vote count: {{ vote1 }}
+            </div>
+            <div class="vote2">
+                    2nd vote count: {{ vote2 }}
+            </div>
+        </p> -->
+    <hr>
+    <div id="votingCount">
+
+    </div>
+    <p>Active: {{ question.is_active }}, Code: {{ question.code }}</p>
+    <div>
+        <div class="grid-x grid-padding-x">
+            <div>
+                <form action="", method="POST">
+                    {% csrf_token %}
+                    <input type="submit", class="success button", value="1st Vote", name="_check_vote">
+                    <input type="submit", class="secondary button", value="2nd Vote", name="_vote_again">
+                    <input type="submit", class="alert button", value="Plot", name="_plot">
+                    <input type="submit", class="button", value="List", name="_list">
+                </form>
+            </div>
+        </div>
+    </div> 
+{% endblock %}
+
+{% block javascript %}
+    <!-- <script>
+        $("#flashMessage").hide();
+        $("#flashMessage").fadeIn(1000);
+        $("#flashMessage").delay(3000);
+        $("#flashMessage").slideUp();
+    </script> -->
+    <script>
+        var url = 'ajax/count{{question.id}}';
+        var data = {};
+        var callback = function (response) {
+            // do somethin with the response
+            // $('.vote1').html(response)
+            var statusHTML = '<p>';
+            // $.each(response, function (index, votes){
+            //     statusHTML =+ '<li>' + votes + '</li>';
+            // });
+            statusHTML += "1st Vote Count: " + response.vote1;
+            statusHTML += ", 2nd Vote Count: " + response.vote2;
+            statusHTML += '</p>';
+            // console.log(statusHTML)
+            document.getElementById('votingCount').innerHTML = statusHTML;
+        };
+        $.get(url, data, callback);
+    </script>
+{% endblock %}

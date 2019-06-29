@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %} Courses Detail | {{block.super}} {% endblock %}
+
+{% block content %}
+    <h5>{{ object }}</h5>
+    <p> {{ object.goal|safe }} </p>
+    <!-- <a href='https://www.google.com'>Test</a> -->
+<!-- <hr> -->
+<!-- <p><a href="{% url 'courses:edit' pk=object.pk %}" class="button">Edit</a></p> -->
+{% endblock %}

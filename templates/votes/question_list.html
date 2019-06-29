@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %} Votes | {{block.super}} {% endblock %}
+
+{% block content %}
+    {% if question_list %}
+    <ul>
+        {% for question in question_list %}
+        <li>
+            <a href="{{ question.get_absolute_url }}"> {{ question }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p> There are no questions in the question list.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,59 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+{% extends "base.html" %}
+
+{% block title %} Vote Question | {{block.super}} {% endblock %}
+
+{% block content %}
+    {% comment %}
+    <h1>{{ question.title }}</h1>
+    <p>{{ question.prompt }}</p>
+    {% endcomment %}
+    <img src="{{ question.contents.url }}">
+    <div id="results">
+        {% include "votes/partial_results.html" %}
+    </div>
+    <p>Active: {{ question.is_active }}</p>
+    <hr>
+    <!---
+    <p> Voting Status: This is your {% if question.code == 1 %} first {% else %} second {% endif %} vote. </p>
+    --->
+    <div>
+        <div class="grid-x grid-padding-x">
+            <!-- <div class="small-2 cell">
+                        <select id="select" name="select">
+                            <option value="41">41</option>
+                            <option value="42">42</option>
+                            <option value="43">43</option>
+                            <option value="44">44</option>
+                        </select>
+            </div> -->
+            <div>
+                <form action="", method="POST">
+                    {% csrf_token %}
+                    <input type="submit", class="success button", value="Check Vote", name="_check_vote">
+                    <input type="submit", class="secondary button", value="2nd Vote", name="_vote_again">
+                    <input type="submit", class="alert button", value="Plot", name="_plot">
+                    <input type="submit", class="button", value="List", name="_list">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% block javascript %}
+    <script>
+        // get references to select list and display it at console
+        // var sel = document.getElementById('select');
+        // console.log( sel.value )
+
+        // $("#select").change(function () {
+        //     console.log( $(this).val() );
+        //     var section = $(this).val();
+        // });
+
+        // Ajax
+        
+        
+    </script>
+    {% endblock %}
+{% endblock %}

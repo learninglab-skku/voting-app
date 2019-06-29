@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %} Student | {{block.super}} {% endblock %}
+
+{% block content %}
+    <h5> Student </h5>
+    <a class="button expanded" href="#">Student Infomation</a>
+    <a class="button expanded" href="{% url 'votes:voting' %}">Voting</a>
+{% endblock %}

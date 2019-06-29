@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %} Courses | {{block.super}} {% endblock %}
+
+{% block content %}
+    {% if course_list %}
+    <ul>
+        {% for course in course_list %}
+        <li>
+            <a href="{{ course.get_absolute_url }}"> {{ course }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p> There are no courses in the course list.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %} Vote Question | {{block.super}} {% endblock %}
+
+{% block content %}
+    {{ form.title }}
+    {{ form.prompt }}
+    <form action="", method="POST">
+        {% csrf_token %}
+        <p> Voting state </p>
+        <input type="submit", class="success button", value="First", name="_first">
+        <input type="submit", class="secondary button", value="Second", name="_second">
+        <input type="submit", class="button", value="List", name="_list">
+    </form>
+{% endblock %}

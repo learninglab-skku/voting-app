@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-blogindexpage{% endblock %}
+
+{% block content %}
+    <!-- Sample 1-->
+<!-- Posts panel container -->
+<div class="posts-panel">
+
+        <!-- Panel's header -->
+        <header class="panel-header">
+          <h1 class="panel-title">{{ page.title }}</h1>
+        </header>
+      
+        <!-- Panel's content -->
+        <div class="panel-content">
+      
+          <!-- Posts list -->
+          {% for post in blogpages %}
+            {% with post=post.specific %}
+            <section class="posts-list">
+                <div class="post-item">
+                    <div class="post-text">
+                    <a href="{% pageurl post %}">
+                        <h3 class="post-title">{{ post.title }}</h3>
+                    </a>
+                    <div class="post-meta">
+                            <span class="meta"><span class="meta-icon fa fa-user-circle" aria-hidden="true"></span><a class="meta-text">Steve Jobs</a></span>
+                            <span class="meta"><span class="meta-icon fa fa-clock" aria-hidden="true"></span><span class="meta-text">{{post.date}}</span></span>
+                    </div>
+
+                {% with post.main_image as main_image %}
+                    {% if main_image %}{% image main_image fill-160x100 %}{% endif %}
+                {% endwith %}
+
+                <p>{{ post.intro }}</p>
+                {{ post.body|richtext }}
+            {% endwith %}
+          {% endfor %}
+
+      
+            
+           </section>
+        </div>
+      </div>
+{% endblock %}

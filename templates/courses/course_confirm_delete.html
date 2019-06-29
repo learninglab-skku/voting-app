@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %} Courses Delete | {{block.super}} {% endblock %}
+
+{% block content %}
+    <h2>Delete {{ course }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="submit", class="alert button", value="Delete"> 
+        <a href="{% url 'courses:detail' pk=course.pk %}" class="secondary button">Cancel</a>
+    </form>
+<hr>
+{% endblock %}
