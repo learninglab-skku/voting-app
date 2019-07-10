@@ -4,7 +4,7 @@ from .base import *
 
 DEBUG = True
 
-# # Debug toolbar
+# Debug toolbar
 # INSTALLED_APPS += ("debug_toolbar", )
 # MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware',]
 # DEBUG_TOOLBAR_PATCH_SETTINGS = False

@@ -1,9 +1,16 @@
 import os, sys
 import csv
 
-proj_path = "/home/jun/learninglab/"
+# proj_path = "/home/jun/learninglab/"
+# # This is so Django knows where to find stuff.
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.production")
+# sys.path.append(proj_path)
+
+###########################
+# for 2019 summer project
+proj_path = "/Users/Jun/virtualmachines/ubuntu/learninglab/"
 # This is so Django knows where to find stuff.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.production")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.local")
 sys.path.append(proj_path)
 
 # This is so my local_settings.py gets loaded.
@@ -22,11 +29,12 @@ from courses.models import Section, Group
 User = get_user_model()
 
 ### group or user? ###
-switch = 2
+switch = 3
 
 ### Course Info ###
 year = 2019
-title = "EM 1"
+# title = "EM 1"
+title = "Web-app development"
 
 if switch == 1:
     #########################
@@ -37,7 +45,8 @@ if switch == 1:
 
     """
     class_no = [41, 42, 43, 44]
-    number_of_groups = [16, 16, 16, 16]
+    # number_of_groups = [16, 16, 16, 16]
+    number_of_groups = [2, 2, 2, 2]
 
     # section = models.Section.objects.get(section_no=41, course__year=year, course__title=title)
     # models.Group.objects.create(section=section, group_no=2)
@@ -48,13 +57,29 @@ if switch == 1:
             Group.objects.create(section=section, group_no=g_number + 1)
 
 if switch == 2:
+    #########################
+    ##### create majors #####
+    #########################
+    with open("/Users/Jun/virtualmachines/ubuntu/learninglab/major_list.csv") as f:
+        majors = []
+        for line in csv.reader(f):
+            line = "".join(line)
+            majors.append(line)
+
+    for major in majors:
+        Major.objects.create(title=major)
+
+if switch == 3:
     #################################
     ##### create user instances ######
     #################################
     # import users from csv file
-    with open('/home/jun/Downloads/em1_2019_django_account.csv') as f:
-        users = [tuple(line) for line in csv.reader(f)]
+    # with open('/home/jun/Downloads/em1_2019_django_account.csv') as f:
+    #     users = [tuple(line) for line in csv.reader(f)]
 
+    # for 2019 summer project
+    with open("/Users/Jun/virtualmachines/ubuntu/learninglab/accounts_list.csv") as f:
+        users = [tuple(line) for line in csv.reader(f)]
     # print(users)
 
     # create users

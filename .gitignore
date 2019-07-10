@@ -1,0 +1,11 @@
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+secrets.json
+db.sqlite3
+
+## Virtual environment
+Pipfile
+Pipfile.lock
