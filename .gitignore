@@ -1,0 +1,17 @@
+# Passwd file
+secrets.json
+
+# Text backup files
+*.bak
+
+# Database
+db.sqlite3
+
+*.pyc
+*~
+__pycache__
+/venv
+/static
+/media
+/.vscode
+.DS_Store
