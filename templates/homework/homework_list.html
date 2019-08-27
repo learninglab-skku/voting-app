@@ -22,14 +22,15 @@
               <td class=" ">{{e.title}}</td>
               <td class=" ">{{e.due_date}}</td>
               <td class=" ">
-                {% if e.is_active == 0 %}
-                  <p> x </p>
-                {% else %}
-                  <p> o </p>
-                {% endif %}
+                {% if e.is_active == 1 %}
+                  <p> o </p>      
               </td>
-              <!--onClick="window.open('/media/{{e.contents}}')"-->
               <td><button type="button"  class="btn_show"  onClick="window.open('/homework/detail/{{e.title}}')" hw_name={{e.title}} data-resource={{e.contents}}>Show</button></td>
+                {% else %}
+                  <p> x </p>
+                </td>
+              <td><button type="button">Show</button></td>    
+                {% endif %}
               </tr>
 
       {% endfor %}       

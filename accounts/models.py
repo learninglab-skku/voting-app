@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 from courses.models import Group, Section
+from grade.models import Grade
 
 # User Model: https://wsvincent.com/django-referencing-the-user-model/
 # Multiple User Types: https://simpleisbetterthancomplex.com/tutorial/2018/01/18/how-to-implement-multiple-user-types-with-django.html
@@ -32,6 +33,12 @@ class Student(models.Model):
     
     def get_username(self):
         return self.user.username
+
+    def save(self, **kwargs): ## Make grade object automatically when student object is generated.
+        super(Student, self).save(**kwargs)
+        grade = Grade(student=self)
+        grade.save()
+
 
     # def get_absolute_url(self):
     #    return reverse('votes:edit', kwargs={'pk': self.pk})

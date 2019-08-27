@@ -76,6 +76,9 @@
               <li><a href="{% url 'votes:voting' %}">Voting</a></li>
               <li><a href="{% url 'accounts:student_MyPage' %}">MyPage</a></li>
               <li><a href="{% url 'homework:homework_list' %}">Homework</a></li>
+              {% if user.is_staff %}
+                <li><a href="{% url 'homework:homework_tracker' %}">Homework Tracker</a></li>
+              {% endif%}
             </ul>
           </nav>
         </div>
