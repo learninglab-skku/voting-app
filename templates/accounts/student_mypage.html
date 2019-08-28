@@ -50,4 +50,43 @@ button:hover, a:hover {
     <p> Pre-Class Score : {{score_info.total_pre_class_score}}</p>
 
   </div>
+
+ {# This is for the attendance table. #}
+
+
+<div class="cus_section">
+    <h4 style="text-align:center">Attendance</h4>
+    
+    {% if attendance_list %}
+
+    <table>
+
+        {% for attendance in attendance_list %}
+
+            {% if forloop.counter0|divisibleby:9 %}
+                <tr>
+            {% endif %}
+
+            {% if attendance.1 is 1 %} {# voting 한번 한 경우 #}
+                <td style = "background-color : yellowgreen">{{attendance.0}}</td>                
+            {% else %}
+                <td>{{attendance.0}}</td>
+            {% endif %}
+
+        {% endfor %}
+
+    </table>
+    
+    {% else %}
+
+        attendance_list is empty!
+
+    {% endif %}
+</div>
+
+
+
+
+
+
 {% endblock %}

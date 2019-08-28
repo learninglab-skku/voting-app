@@ -3,7 +3,7 @@ from django.urls import path
 
 from .views import (
     CourseListView, CourseDetailView, CourseCreateView,
-    CourseUpdateView, CourseDeleteView
+    CourseUpdateView, CourseDeleteView,
 )
 
 
