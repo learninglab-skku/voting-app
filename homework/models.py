@@ -18,7 +18,8 @@ class Homework(models.Model):
     video_clip_name_3 = models.CharField(max_length=255, null=True, blank=True)
     video_clip_link_3 = models.CharField(max_length=255, null=True, blank=True)
     
-    quetions_image = models.ImageField(upload_to="homework/", null=True)
+    # quetions_image = models.ImageField(upload_to="homework/", null=True)
+    questions = models.TextField(blank=True)
     
     is_active = models.BooleanField(default=False)
 

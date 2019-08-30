@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-
 {% block title %} HomeWork | {{block.super}} {% endblock %}
 
 {% block content %}
@@ -17,8 +16,8 @@
     <br><br>    <br><br>
 
     <h3>Quetions : </h3>
-
-        <img src="{{hw.quetions_image.url}}">
+    <p> {{ hw.questions|safe }} </p>
+        <!-- <img src="{{hw.quetions_image.url}}"> -->
     <br><br>    <br><br>
     <h3>Submit : </h3>
     <button type="button" class="btn_submit" onClick = "window.open('{{google_forms_url}} {{hw.title}}')" >Go to Submit</button>
