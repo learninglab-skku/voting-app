@@ -1,10 +1,17 @@
-### Django ###
-*.log
-*.pot
-*.pyc
-__pycache__/
+# Passwd file
 secrets.json
 
-## Virtual environment
-Pipfile
-Pipfile.lock
+# Text backup files
+*.bak
+
+# Database
+db.sqlite3
+
+*.pyc
+*~
+__pycache__
+/venv
+/static
+/media
+/.vscode
+.DS_Store
