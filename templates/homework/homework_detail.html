@@ -3,24 +3,24 @@
 {% block title %} HomeWork | {{block.super}} {% endblock %}
 
 {% block content %}
+    <div class="callout clearfix">
+        <h5 class="subheader text-left"> Engineering Mathematics </h5>
+        <h4 class="text-center"><u><strong>Pre-Class Homework {{hw.title}}</strong></u></h4>
+        <h6 class="text-right">  <strong>Due:</strong> </h6>
+    </div>
 
-    <h2>Pre-Class {{hw.title}}</h2>
-    <br><br>
-    
-    <h3>Video Clips : </h3>
+    <h5><strong>Video Clips & Reading:</strong> </h5>
+    <ol id="video_list">     
+    </ol>
 
-    <ul id="video_list">
-       
-    </ul>
-
-    <br><br>    <br><br>
-
-    <h3>Quetions : </h3>
+    <h5><strong>Questions:</strong> </h5>
     <p> {{ hw.questions|safe }} </p>
         <!-- <img src="{{hw.quetions_image.url}}"> -->
     <br><br>    <br><br>
-    <h3>Submit : </h3>
-    <button type="button" class="btn_submit" onClick = "window.open('{{google_forms_url}} {{hw.title}}')" >Go to Submit</button>
+    <p class="text-right"> <u>Submit your answer through this link:</u>
+    <button class="button" onClick = "window.open('{{google_forms_url}} {{hw.title}}')" >
+        Link</button>
+    </p>
 
 
 
