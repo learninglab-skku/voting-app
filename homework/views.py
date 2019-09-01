@@ -47,11 +47,11 @@ def HomeworkDetailView(request, no):
     
 
     ### Make a Pre-filled Google Forms URL with user params
-    google_forms_url = "https://docs.google.com/forms/d/e/1FAIpQLSf2FEAl6FRZP3kaf5lVaXRU3NRqfmrh-9IIhjxm-weolROamQ/viewform"
-    name_field = "entry.1053894363"
-    std_id_field = "entry.1441140489"
-    section_field = "entry.580230306"
-    hw_no_field = "entry.383023472"
+    google_forms_url = "https://docs.google.com/forms/d/e/1FAIpQLSfQZ_BAnhg2zAuU9wGN-JqMiHWibh5LCOrs7cNBWabqvlrQyw/viewform"
+    name_field = "entry.1938219891"
+    std_id_field = "entry.2018654278"
+    section_field = "entry.1692224190"
+    hw_no_field = "entry.584536632"
     
     personal_url_params =  google_forms_url + "?" + \
                             name_field+"="+student.name + \
