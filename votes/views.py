@@ -29,7 +29,7 @@ from grade.models import AttendanceInstance
 @method_decorator(teacher_required, name='dispatch')
 class QuestionListView(ListView):
     model = Question
-    
+
 
 @method_decorator(teacher_required, name='dispatch')
 class QuestionView(View):
@@ -42,6 +42,13 @@ class QuestionView(View):
 
         response_status = []
 
+
+
+        ##### for making attendance instance
+        # response_all = Response.objects.all()
+        # for response in response_all:
+        #     if response.vote2:
+        #         createAttendance(response.student,True,response.timestamp.date())
 
 
         # find groups that have 3 or more wrong answers.
@@ -387,11 +394,12 @@ def createAttendance(student, status):
         else:
             attendance.status = False
 
+        ## for making attendance instace
+        #attendance.datestamp = date
+
         attendance.save()
 
     except:
-        print('There was a problem creating the user: {0}.  Error: {1}.' \
-        .format(student.name, sys.exc_info()[1]))
-
+        print('There was a problem creating the user')
 
 
