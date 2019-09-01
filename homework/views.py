@@ -82,7 +82,6 @@ class HomeworkStartView(View):
         
         ### It Not exist, make new one 
         if not HomeworkTraker.objects.filter(Student=s_instance.pk, Homework=h_instance.pk).exists():
-            print("Nonono")
             new_row = HomeworkTraker(Student=s_instance, Homework=h_instance)
             new_row.save()
 
@@ -165,6 +164,7 @@ def HomeworkAllList(request, hw_no):
 
 
 ### Called when instructor clicks check button in tracker page
+### Response the time tracker results
 def HomeworkCheckList(request, course_id, hw_no):
 
     ### Get Section from Course 
@@ -172,6 +172,7 @@ def HomeworkCheckList(request, course_id, hw_no):
 
 
         ### Get all Students in this Course
+    ### Constraints : the number of section in a Course must be 4 or error. TODO: Fix
     std_list = Student.objects.filter(section_id=sec_list[0]) | Student.objects.filter(section_id=sec_list[1]) | Student.objects.filter(section_id=sec_list[2]) | Student.objects.filter(section_id=sec_list[3])
 
 
@@ -184,10 +185,10 @@ def HomeworkCheckList(request, course_id, hw_no):
         hw_time = HomeworkTraker.objects.filter(Student = e.pk, Homework= hw_no)
 
         if hw_time.exists():
-            if hw_time[0].start_time != None:
-                s_res.append(hw_time[0].start_time.strftime('%Y-%m-%d %H:%M'))    
-            else:
-                s_res.append("None")
+            # if hw_time[0].start_time != None:
+            #     s_res.append(hw_time[0].start_time.strftime('%Y-%m-%d %H:%M'))    
+            # else:
+            #     s_res.append("None")
 
             if hw_time[0].start_time_video_1 != None:
                 s_res.append(hw_time[0].start_time_video_1.strftime('%Y-%m-%d %H:%M'))    
@@ -205,7 +206,7 @@ def HomeworkCheckList(request, course_id, hw_no):
                 s_res.append("None")            
             
         else:
-            s_res.append("None")
+            #s_res.append("None")
             s_res.append("None")            
             s_res.append("None")    
             s_res.append("None")    
