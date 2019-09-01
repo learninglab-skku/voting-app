@@ -1,6 +1,7 @@
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+import datetime
 
 from courses.models import Group, Section, Course
 
@@ -18,6 +19,16 @@ class Grade(models.Model):
    total_web_work_score = models.IntegerField(null=True, blank=True)
    
    total_pre_class_score = models.IntegerField(null=True, blank=True)
+
+
+class AttendanceInstance(models.Model):
+
+	# Lazy Reference for being created automatically when student is generated. 
+	student = models.ForeignKey("accounts.student", on_delete=models.CASCADE)
+
+	status = models.BooleanField(default = False)
+
+	datestamp = models.DateField(default=datetime.date.today)
 
    
 

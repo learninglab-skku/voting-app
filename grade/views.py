@@ -11,7 +11,7 @@ from learninglab.decorators import student_required, teacher_required
 from django.conf import settings # 추천!
 
 from accounts.models import Student, User
-from grade.models import Grade
+from grade.models import Grade, AttendanceInstance
 from datetime import date
 import calendar
 from votes.models import Response
@@ -51,7 +51,7 @@ class Student_MyPage(View):
         #student_number = request.user.Student.student_no
         # print("==================\n",request.user.pk)
         # print("==================\n",request.user.username)
-        response_all = Response.objects.all()
+        attendance_all = AttendanceInstance.objects.all()
         student_number = Student.objects.get(user__id = request.user.id).student_no
 
         attendance_list = []
@@ -66,7 +66,7 @@ class Student_MyPage(View):
 
 
                             class_date = date(YEAR, month, week[getattr(calendar, each)])
-                            student_attendance = response_all.filter(timestamp__contains=class_date,
+                            student_attendance = attendance_all.filter(datestamp=class_date,
                                                      student__student_no=student_number)
                             if student_attendance:
                                 temp_instance.append(1)

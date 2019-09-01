@@ -26,7 +26,7 @@ class Question(models.Model):
     code = models.IntegerField(default=0)
     is_active = models.IntegerField(default=0)
     answer = models.TextField(blank=True)
-    correct_number = models.IntegerField(default=1)
+    correct_number = models.IntegerField(default=1) # correct answer for the problem
     lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE)
 
     # custom model manager
