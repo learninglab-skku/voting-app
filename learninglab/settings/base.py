@@ -114,7 +114,7 @@ DATABASES = {
         'NAME': 'learninglab',
         'USER': 'learninglab_user',
         'PASSWORD': get_secret("DB_PASSWORD"),
-        # 'HOST': 'localhost',
+        'HOST': 'localhost',
         # 'PORT': '',
     },
     # 'default': {
