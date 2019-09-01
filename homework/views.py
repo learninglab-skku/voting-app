@@ -26,11 +26,13 @@ class HomeworkListView(View):
         ### Who is user?
         user_id = request.user.get_username()
         student = get_student_info(user_id)
+        print("user is : ", request.user.pk)
+        course_pk = Student.objects.get(user=request.user.pk).section.course.pk
+        print(course_pk)
+
         
-
         ### Get homework list for the user
-        hm = Homework.objects.all() #TODO: 여기에 Course ID로 filtering
-
+        hm = Homework.objects.filter(Course=course_pk) #TODO: 여기에 Course ID로 filtering
 
 
         return render(request, 'homework/homework_list.html', {'homework_list': hm})
