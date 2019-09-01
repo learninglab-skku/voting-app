@@ -165,7 +165,6 @@ def HomeworkAllList(request, hw_no):
 ### Called when instructor clicks check button in tracker page
 def HomeworkCheckList(request, course_id, hw_no):
 
-
     ### Get Section from Course 
     sec_list = Section.objects.filter(course= course_id).values_list('pk', flat=True)
 
@@ -215,7 +214,6 @@ def HomeworkCheckList(request, course_id, hw_no):
     row_json = json.dumps(res)
 
 
-
     return JsonResponse(row_json, safe=False)
 
 
@@ -223,6 +221,12 @@ def HomeworkCheckList(request, course_id, hw_no):
 
 class HomeworkTrackerView(View):
     def get(self, request):
+        
+        ### Authentication
+        if not request.user.is_superuser :
+            return redirect('/')
+        
+
         course_list = Course.objects.all()
 
         return render(request, 'homework/homework_tracker.html', {'course_list':course_list})
