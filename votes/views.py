@@ -24,11 +24,12 @@ from learninglab.decorators import student_required, teacher_required
 from . import mixins
 # from .forms import VoteForm
 
+from grade.models import AttendanceInstance
 
 @method_decorator(teacher_required, name='dispatch')
 class QuestionListView(ListView):
     model = Question
-    
+
 
 @method_decorator(teacher_required, name='dispatch')
 class QuestionView(View):
@@ -41,6 +42,13 @@ class QuestionView(View):
 
         response_status = []
 
+
+
+        ##### for making attendance instance
+        # response_all = Response.objects.all()
+        # for response in response_all:
+        #     if response.vote2:
+        #         createAttendance(response.student,True,response.timestamp.date())
 
 
         # find groups that have 3 or more wrong answers.
@@ -252,7 +260,9 @@ class ResponseUpdateView(LoginRequiredMixin, UpdateView):
             # form.instance.question2 = form.cleaned_data['question']
             messages.success(self.request, "You have submitted your second vote!")
             super().form_valid(form)
+            createAttendance(self.request.user.student, True)
             return redirect("accounts:student_view")
+
         except ObjectDoesNotExist:
             messages.success(self.request, "Please wait. Second vote is not ready.")
             return redirect("votes:edit", pk=self.object.pk)
@@ -371,3 +381,25 @@ class ResponseStatusView(ListView):
             return render(request,
                 "votes/response_list.html",
                 {"response_list": response_list,"student_list": student_list})
+
+
+def createAttendance(student, status):
+    
+    try:
+
+        attendance = AttendanceInstance(student = student)
+
+        if status is True:
+            attendance.status = True
+        else:
+            attendance.status = False
+
+        ## for making attendance instace
+        #attendance.datestamp = date
+
+        attendance.save()
+
+    except:
+        print('There was a problem creating the user')
+
+

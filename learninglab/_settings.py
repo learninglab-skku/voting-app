@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     'courses',
     'accounts',
     'votes',
+    'grade',
+    'homework',
     # wagtail
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
