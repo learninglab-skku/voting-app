@@ -176,10 +176,14 @@ def HomeworkCheckList(request, course_id, hw_no):
     ### Get Section from Course 
     sec_list = Section.objects.filter(course= course_id).values_list('pk', flat=True)
 
+    tmp_list = []
+
+    for n in sec_list:
+        tmp_list.append(n)
 
         ### Get all Students in this Course
     ### Constraints : the number of section in a Course must be 4 or error. TODO: Fix
-    std_list = Student.objects.filter(section_id=sec_list[0]) | Student.objects.filter(section_id=sec_list[1]) | Student.objects.filter(section_id=sec_list[2]) | Student.objects.filter(section_id=sec_list[3])
+    std_list = Student.objects.filter(section_id=tmp_list[0]) | Student.objects.filter(section_id=tmp_list[1]) | Student.objects.filter(section_id=tmp_list[2]) | Student.objects.filter(section_id=tmp_list[3])
 
 
     ### Get H/W time from tracker DB
