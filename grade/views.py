@@ -35,15 +35,19 @@ class Student_MyPage(View):
 
 
         ### Get Student Attendance
-        today = date.today()
-        current_month = today.month
-
+        # double vote error
         fall = range(9,13)
         spring = range(3,7)
-        YEAR = 2018
+        season = Info.section.course.semester
+        if season == 'Fall':
+            semester = fall
+        if season == 'Spring':
+            semester = spring
+
+
+        YEAR = Info.section.course.year
         classes = ['TUESDAY', 'THURSDAY']
 
-        semester = fall
 
        
         #student_number = Student.objects.get(user = request.user.id).student_no
@@ -85,5 +89,5 @@ class Student_MyPage(View):
         for n in std_list:
             if n.get_username() == user_id:
                 return n
-                break;
+                break
         return None

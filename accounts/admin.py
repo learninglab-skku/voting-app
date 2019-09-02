@@ -17,6 +17,7 @@ class StudentInline(admin.StackedInline):
 #     inlines = (StudentInline,)
 class CustomUserAdmin(UserAdmin):
     inlines = (StudentInline, )
+    fields = ('is_student', 'is_teacher')
 
     def get_inline_instances(self, request, obj=None):
         if not obj:

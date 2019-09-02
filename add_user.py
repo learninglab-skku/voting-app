@@ -29,12 +29,12 @@ from courses.models import Section, Group
 User = get_user_model()  
 
 ### group or user? ###
-switch = 1
+switch = 3
 
 ### Course Info ###
 year = 2019
-# title = "EM 1"
-title = "Web-app development"
+# title = "E"
+title = "Engineering Mathematics 2"
 
 if switch == 1:
     #########################
@@ -45,8 +45,7 @@ if switch == 1:
 
     """
     class_no = [41, 42, 43, 44]
-    # number_of_groups = [16, 16, 16, 16]
-    number_of_groups = [2, 2, 2, 2]
+    number_of_groups = [16, 17, 16, 16]
 
     # section = models.Section.objects.get(section_no=41, course__year=year, course__title=title)
     # models.Group.objects.create(section=section, group_no=2)
@@ -60,7 +59,7 @@ if switch == 2:
     #########################
     ##### create majors #####
     #########################
-    with open("/Users/Bambiz/Dev/git/voting-app-new/voting-app/major_list.csv",encoding = 'UTF8') as f:
+    with open("./em2_major.csv",encoding = 'CP949') as f:
         majors = []
         for line in csv.reader(f):
             line = "".join(line)
@@ -78,12 +77,14 @@ if switch == 3:
     #     users = [tuple(line) for line in csv.reader(f)]
 
     # for 2019 summer project
-    with open("/Users/Bambiz/Dev/git/voting-app-new/voting-app/accounts_list.csv", encoding = 'UTF8') as f:
+    with open("./em2_student.csv", encoding = 'CP949') as f:
         users = [tuple(line) for line in csv.reader(f)]
     # print(users)
 
     # create users
     for username, password, student_no, name, major, section, group in users:
+
+        
         try:
             print('Creating user {0}.'.format(username))
             user = User.objects.create_user(username=username)
