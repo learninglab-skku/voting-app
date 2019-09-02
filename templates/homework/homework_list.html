@@ -4,43 +4,37 @@
 
 {% block content %}
 
-<table>
-  <thead>
-  <tr>
-    <th>pre-class Numbur</th>
-    <th>Due Date</th>
-    <th>Available</th>
-    <th>Show</th>
-  </tr>
-  </thead>
-  <tbody>
-                                
-      {%for e in homework_list %}
-
-          
-              <tr>
-              <td class=" ">{{e.title}}</td>
-              <td class=" ">{{e.due_date}}</td>
-              <td class=" ">
-                {% if e.is_active == 1 %}
-                  <p> o </p>      
-              </td>
-              <td><button type="button"  class="btn_show"  onClick="window.open('/homework/detail/{{e.title}}')" hw_name={{e.title}} data-resource={{e.contents}}>Show</button></td>
-                {% else %}
-                  <p> x </p>
-                </td>
-              <td><button type="button">Show</button></td>    
-                {% endif %}
-              </tr>
-
+<h5 class="subheader"> Pre-Class Homework </h5>
+<div class="grid-x">
+  
+  <div class="small-6 cell">
+  <table class="scroll">
+    <thead>
+      <tr>
+        <th width="200">Homework No.</th>
+        <th width="150">Due Date</th>
+        <th width="150"> </th>
+      </tr>
+    </thead>
+    <tbody>                        
+      {% for e in homework_list %}
+      <tr>
+        <td class=" ">{{e.title}}</td>
+        <td class=" ">{{e.due_date}}</td>
+        <td class=" ">
+        {% if e.is_active == 1 %}
+        <td><button class="button"  onClick="window.open('/homework/detail/{{e.title}}')" 
+          hw_name={{e.title}} data-resource={{e.contents}}>Open</button>
+        </td>
+        {% else %}
+        <td><button class="button disabled">Open</button></td>    
+        {% endif %}
+        </tr>
       {% endfor %}       
-
     </tbody>
-
-</table>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  </table>
+  </div>
+</div>
 
 <script>
   $('.btn_show').click(function(){

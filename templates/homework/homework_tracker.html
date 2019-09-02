@@ -23,16 +23,23 @@
     <button type="button" id="btn_show">Check</button>
 
     <br><br><br>
-    
-    <table id="result_table">
+    <table>
+        <thead>
         <tr>
           <th>Student Id</th>
-          <th>Start time</th>
           <th>Video 1</th>
           <th>Video 2</th>
           <th>Video 3</th>
         </tr>
+        </thead>
+        <tbody id="result_table">
+
+
+        </tbody>
+
     </table>
+
+
 
 
 
@@ -73,8 +80,10 @@
 
             var sel = document.getElementById("hw_list");
             var hw_no = sel.options[sel.selectedIndex].value;
-            $("#result_table").innerHTML="";
 
+            $("#result_table").empty();
+
+            //$("#result_table")
             // fetch student info & homework time  
             fetch("api/v1/homework/check/"+course_no+"/"+hw_no)
             .then(function(res){

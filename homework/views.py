@@ -20,17 +20,25 @@ from django.utils import timezone
 import copy
 import json
 
+from django.utils.decorators import method_decorator
+from learninglab.decorators import student_required, teacher_required
+
+
+
+@method_decorator(student_required, name='dispatch')
 class HomeworkListView(View):
     def get(self, request, *args, **kwargs):
         
         ### Who is user?
         user_id = request.user.get_username()
         student = get_student_info(user_id)
+        print("user is : ", request.user.pk)
+        course_pk = Student.objects.get(user=request.user.pk).section.course.pk
+        print(course_pk)
+
         
-
         ### Get homework list for the user
-        hm = Homework.objects.all() #TODO: 여기에 Course ID로 filtering
-
+        hm = Homework.objects.filter(Course=course_pk) #TODO: 여기에 Course ID로 filtering
 
 
         return render(request, 'homework/homework_list.html', {'homework_list': hm})
@@ -47,11 +55,11 @@ def HomeworkDetailView(request, no):
     
 
     ### Make a Pre-filled Google Forms URL with user params
-    google_forms_url = "https://docs.google.com/forms/d/e/1FAIpQLSf2FEAl6FRZP3kaf5lVaXRU3NRqfmrh-9IIhjxm-weolROamQ/viewform"
-    name_field = "entry.1053894363"
-    std_id_field = "entry.1441140489"
-    section_field = "entry.580230306"
-    hw_no_field = "entry.383023472"
+    google_forms_url = "https://docs.google.com/forms/d/e/1FAIpQLSfQZ_BAnhg2zAuU9wGN-JqMiHWibh5LCOrs7cNBWabqvlrQyw/viewform"
+    name_field = "entry.1938219891"
+    std_id_field = "entry.2018654278"
+    section_field = "entry.1692224190"
+    hw_no_field = "entry.584536632"
     
     personal_url_params =  google_forms_url + "?" + \
                             name_field+"="+student.name + \
@@ -80,7 +88,6 @@ class HomeworkStartView(View):
         
         ### It Not exist, make new one 
         if not HomeworkTraker.objects.filter(Student=s_instance.pk, Homework=h_instance.pk).exists():
-            print("Nonono")
             new_row = HomeworkTraker(Student=s_instance, Homework=h_instance)
             new_row.save()
 
@@ -163,15 +170,20 @@ def HomeworkAllList(request, hw_no):
 
 
 ### Called when instructor clicks check button in tracker page
+### Response the time tracker results
 def HomeworkCheckList(request, course_id, hw_no):
-
 
     ### Get Section from Course 
     sec_list = Section.objects.filter(course= course_id).values_list('pk', flat=True)
 
+    tmp_list = []
+
+    for n in sec_list:
+        tmp_list.append(n)
 
         ### Get all Students in this Course
-    std_list = Student.objects.filter(section_id=sec_list[0]) | Student.objects.filter(section_id=sec_list[1]) | Student.objects.filter(section_id=sec_list[2]) | Student.objects.filter(section_id=sec_list[3])
+    ### Constraints : the number of section in a Course must be 4 or error. TODO: Fix
+    std_list = Student.objects.filter(section_id=tmp_list[0]) | Student.objects.filter(section_id=tmp_list[1]) | Student.objects.filter(section_id=tmp_list[2]) | Student.objects.filter(section_id=tmp_list[3])
 
 
     ### Get H/W time from tracker DB
@@ -183,10 +195,10 @@ def HomeworkCheckList(request, course_id, hw_no):
         hw_time = HomeworkTraker.objects.filter(Student = e.pk, Homework= hw_no)
 
         if hw_time.exists():
-            if hw_time[0].start_time != None:
-                s_res.append(hw_time[0].start_time.strftime('%Y-%m-%d %H:%M'))    
-            else:
-                s_res.append("None")
+            # if hw_time[0].start_time != None:
+            #     s_res.append(hw_time[0].start_time.strftime('%Y-%m-%d %H:%M'))    
+            # else:
+            #     s_res.append("None")
 
             if hw_time[0].start_time_video_1 != None:
                 s_res.append(hw_time[0].start_time_video_1.strftime('%Y-%m-%d %H:%M'))    
@@ -204,7 +216,7 @@ def HomeworkCheckList(request, course_id, hw_no):
                 s_res.append("None")            
             
         else:
-            s_res.append("None")
+            #s_res.append("None")
             s_res.append("None")            
             s_res.append("None")    
             s_res.append("None")    
@@ -215,7 +227,6 @@ def HomeworkCheckList(request, course_id, hw_no):
     row_json = json.dumps(res)
 
 
-
     return JsonResponse(row_json, safe=False)
 
 
@@ -223,6 +234,12 @@ def HomeworkCheckList(request, course_id, hw_no):
 
 class HomeworkTrackerView(View):
     def get(self, request):
+        
+        ### Authentication
+        if not request.user.is_superuser :
+            return redirect('/')
+        
+
         course_list = Course.objects.all()
 
         return render(request, 'homework/homework_tracker.html', {'course_list':course_list})
