@@ -20,6 +20,12 @@ from django.utils import timezone
 import copy
 import json
 
+from django.utils.decorators import method_decorator
+from learninglab.decorators import student_required, teacher_required
+
+
+
+@method_decorator(student_required, name='dispatch')
 class HomeworkListView(View):
     def get(self, request, *args, **kwargs):
         

@@ -6,6 +6,8 @@ from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 # from tablib import Dataset
 
+
+
 from .forms import SignUpForm
 # from .resources import StudentResource
 from learninglab.decorators import student_required, teacher_required
@@ -49,6 +51,7 @@ def login_success(request):
 
 
 
+@method_decorator(student_required, name='dispatch')
 class Student_MyPage(View):
     def get(self, request):
 
