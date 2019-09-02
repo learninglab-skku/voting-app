@@ -1,17 +1,17 @@
 import os, sys
 import csv
 
-# proj_path = "/home/jun/learninglab/"
-# # This is so Django knows where to find stuff.
-# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.production")
-# sys.path.append(proj_path)
+proj_path = "/home/jun/learninglab/"
+# This is so Django knows where to find stuff.
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.production")
+sys.path.append(proj_path)
 
 ###########################
-# for 2019 summer project
-proj_path = "/Users/Bambiz/Dev/git/voting-app-new/voting-app/"
-# This is so Django knows where to find stuff.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.local")
-sys.path.append(proj_path)
+# # for 2019 summer project
+# proj_path = "/Users/Bambiz/Dev/git/voting-app-new/voting-app/"
+# # This is so Django knows where to find stuff.
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.local")
+# sys.path.append(proj_path)
 
 # This is so my local_settings.py gets loaded.
 os.chdir(proj_path)
