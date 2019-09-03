@@ -15,18 +15,19 @@ class StudentInline(admin.StackedInline):
 # Define a new User admin
 # class User(models.User):
 #     inlines = (StudentInline,)
-class CustomUserAdmin(UserAdmin):
-    inlines = (StudentInline, )
-    fields = ('is_student', 'is_teacher')
+# class CustomUserAdmin(UserAdmin):
+#     inlines = (StudentInline, )
+#     fields = ('is_student', 'is_teacher')
 
-    def get_inline_instances(self, request, obj=None):
-        if not obj:
-            return list()
-        return super(CustomUserAdmin, self).get_inline_instances(request, obj)
+#     def get_inline_instances(self, request, obj=None):
+#         if not obj:
+#             return list()
+#         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
 
 
 admin.site.register(Major)
-admin.site.register(User, CustomUserAdmin)
+admin.site.register(User)
+# admin.site.register(User, CustomUserAdmin)
 
 # admin.site.register(User)
 # admin.site.register(Student)
