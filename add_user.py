@@ -1,7 +1,7 @@
 import os, sys
 import csv
 
-proj_path = "/home/jun/learninglab/"
+proj_path = "/home/jun/learninglab"
 # This is so Django knows where to find stuff.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.production")
 sys.path.append(proj_path)
@@ -26,7 +26,7 @@ from django.contrib.auth import get_user_model
 from accounts.models import Student, Major
 from courses.models import Section, Group
 
-User = get_user_model()  
+User = get_user_model()
 
 ### group or user? ###
 switch = 3
@@ -40,7 +40,7 @@ if switch == 1:
     #########################
     ##### create groups #####
     #########################
-    """ 
+    """
     Sections are already created manually using admin mode
 
     """
@@ -73,18 +73,47 @@ if switch == 3:
     ##### create user instances ######
     #################################
     # import users from csv file
-    # with open('/home/jun/Downloads/em1_2019_django_account.csv') as f:
-    #     users = [tuple(line) for line in csv.reader(f)]
-
-    # for 2019 summer project
     with open("./em2_student.csv", encoding = 'CP949') as f:
         users = [tuple(line) for line in csv.reader(f)]
     # print(users)
 
+
+
+    ### check for existing, deleted or modified students.
+    student_all = Student.objects.all()
+    txtf = open("./students_to_delete.txt",'w')
+
+    # if students delete course, show them on a txt file
+    for student in student_all:
+        exist_flag = 0
+        for username, password, student_no, name, major, section, group in users:
+            if student.get_username() == username:
+                exist_flag = 1
+        if exist_flag == 0:
+            txtf.write(str(student.student_no) + '\t' + student.name + student.get_username() + '\n')
+
+    txtf.close()
+
+
+
+
+
     # create users
     for username, password, student_no, name, major, section, group in users:
 
-        
+        # if student exist, skip.
+        # if student is modified, apply changes in section.
+        no_insert_flag = 0
+        for student in student_all:
+            if student.get_username() == username:
+                if student.section != section:
+                    student.section = Section.objects.get(section_no=section, course__year=year, course__title=title)
+                    student.save()
+                    no_insert_flag = 1
+
+        if no_insert_flag == 1:
+            continue
+
         try:
             print('Creating user {0}.'.format(username))
             user = User.objects.create_user(username=username)
