@@ -6,9 +6,11 @@
     <div class="callout clearfix">
         <h5 class="subheader text-left"> Engineering Mathematics </h5>
         <h4 class="text-center"><u><strong>Pre-Class Homework {{hw.title}}</strong></u></h4>
-        <h6 class="text-right">  <strong>Due:</strong> </h6>
+	<h6 class="text-right">  <strong>Due: {{ hw.due_date }} </strong> </h6>
     </div>
 
+    
+    <h5><u>Optional Reading: {{ hw.optional_readings }}</u> </h5>
     <h5><strong>Video Clips & Reading:</strong> </h5>
     <ol id="video_list">     
     </ol>
