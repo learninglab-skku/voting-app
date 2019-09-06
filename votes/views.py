@@ -386,20 +386,27 @@ class ResponseStatusView(ListView):
 
 def createAttendance(student, status):
     
-    try:
-        attendance = AttendanceInstance(student = student)
-
-        if status is True:
-            attendance.status = True
-        else:
-            attendance.status = False
-
-        ## for making attendance instace
-        #attendance.datestamp = date
-
-        attendance.save()
+    try: 
+        AttendanceInstance.objects.get(student = student)
+        
+        print("Attendance already exist!")
 
     except:
-        print('There was a problem creating the user')
+    
+        try:
+            attendance = AttendanceInstance(student = student)
+
+            if status is True:
+                attendance.status = True
+            else:
+                attendance.status = False
+
+            ## for making attendance instace
+            #attendance.datestamp = date
+
+            attendance.save()
+
+        except:
+            print('There was a problem creating the user')
 
 

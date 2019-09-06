@@ -18,6 +18,7 @@ from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 
 from votes.models import Response
+from grade.models import AttendanceInstance
 
 
 # User input for class information
@@ -37,7 +38,10 @@ book = copy(xl_workbook)
 sheet1 = book.get_sheet(0)
 
 # All response data
-r = Response.objects.all()
+# r = Response.objects.all()
+# All AttendanceInstance data
+ar = AttendanceInstance.objects.all()
+
 
 # Calculate lecture date
 lecture_date = []
@@ -61,8 +65,11 @@ for month in semester:
                 class_date = date(YEAR, month, week[getattr(calendar, each)])
                 # print(class_date)
                 try:
-                    student_in_each_class = r.filter(timestamp__contains=class_date,
-                                                     student__section__section_no=section_number)
+                    # student_in_each_class = r.filter(timestamp__contains=class_date,
+                    #                                  student__section__section_no=section_number)
+                    student_in_each_class = ar.filter(datestamp=class_date,
+                                                     student__section__section_no=section_number)                    
+
                     ################ Modify this later.
                     # print(student_in_each_class.count())
                     for st in student_in_each_class:
