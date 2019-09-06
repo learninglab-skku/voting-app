@@ -90,7 +90,8 @@ if switch == 3:
             if student.get_username() == username:
                 exist_flag = 1
         if exist_flag == 0:
-            txtf.write(str(student.student_no) + '\t' + student.name + student.get_username() + '\n')
+            txtf.write(str(student.student_no) + '\t' + student.name + '\t' + student.get_username() + '\n')
+            print("students to delete : " + str(student.student_no) + '\t' + student.name + '\t' + student.get_username())
 
     txtf.close()
 
@@ -101,18 +102,27 @@ if switch == 3:
     # create users
     for username, password, student_no, name, major, section, group in users:
 
+
+        if username = "" :      # End of File. break.
+            break
+
         # if student exist, skip.
         # if student is modified, apply changes in section.
         no_insert_flag = 0
         for student in student_all:
             if student.get_username() == username:
-                if student.section != section:
-                    student.section = Section.objects.get(section_no=section, course__year=year, course__title=title)
-                    student.group = group
-                    student.save()
-                    no_insert_flag = 1
+                no_insert_flag = 1       # don't create user.         
 
-        if no_insert_flag == 1:
+                if student.section.section_no != int(section):
+                    student.section = Section.objects.get(section_no=section, course__year=year, course__title=title)
+                    student.group = Group.objects.get(section__section_no=section, section__course__year=year, section__course__title=title, group_no=group)
+                    student.save()
+                    print(student.name + " is successfully modified")
+                else:
+                    print(student.name + " has no change")
+
+
+        if no_insert_flag == 1:    # skips to next.
             continue
 
         try:
