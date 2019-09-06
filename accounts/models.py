@@ -34,11 +34,6 @@ class Student(models.Model):
     def get_username(self):
         return self.user.username
 
-    def save(self, **kwargs): ## Make grade object automatically when student object is generated.
-        super(Student, self).save(**kwargs)
-        grade = Grade(student=self)
-        grade.save()
-
 
     # def get_absolute_url(self):
     #    return reverse('votes:edit', kwargs={'pk': self.pk})

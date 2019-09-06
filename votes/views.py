@@ -25,6 +25,7 @@ from . import mixins
 # from .forms import VoteForm
 
 from grade.models import AttendanceInstance
+import datetime
 
 @method_decorator(teacher_required, name='dispatch')
 class QuestionListView(ListView):
@@ -386,7 +387,6 @@ class ResponseStatusView(ListView):
 def createAttendance(student, status):
     
     try:
-
         attendance = AttendanceInstance(student = student)
 
         if status is True:

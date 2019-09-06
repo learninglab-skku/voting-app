@@ -19,3 +19,8 @@ __pycache__
 # My files
 accounts_list.csv
 major_list.csv
+em2_*.csv
+
+# Txt files
+students_to_delete.txt
+

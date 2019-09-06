@@ -5,6 +5,7 @@ from . import models
 class AttendanceAdmin(admin.ModelAdmin):
 
     fields = ('student', 'status', 'datestamp')
+    search_fields = ['student__name']
 
 
 

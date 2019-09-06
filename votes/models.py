@@ -5,7 +5,6 @@ from django.urls import reverse
 from courses.models import Lecture, Section
 from accounts.models import Student
 
-
 class StatusManager(models.Manager):
     def no_vote(self):
         return self.get(code=0)

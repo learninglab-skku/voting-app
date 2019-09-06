@@ -31,7 +31,7 @@ class Student_MyPage(View):
 
 
         ### Get the User Score Info
-        score_info = Grade.objects.get(student=Info.pk)
+        # score_info = Grade.objects.get(student=Info.pk)
 
 
         ### Get Student Attendance
@@ -80,8 +80,10 @@ class Student_MyPage(View):
         
 
         ### Response
-        return render(request, 'accounts/student_mypage.html', {'Info': Info, 'score_info':score_info,
-                        'attendance_list':attendance_list})
+        return render(request, 'accounts/student_mypage.html', {'Info': Info, 'attendance_list':attendance_list})
+        ### Commented out by Jun 9/4/19 due to multiple grade instances: remove score_info.
+        # return render(request, 'accounts/student_mypage.html', {'Info': Info, 'score_info':score_info,
+        #                 'attendance_list':attendance_list})
 
     #TODO: 
     def get_student_info(self, user_id):
