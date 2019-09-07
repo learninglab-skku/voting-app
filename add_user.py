@@ -103,7 +103,7 @@ if switch == 3:
     for username, password, student_no, name, major, section, group in users:
 
 
-        if username = "" :      # End of File. break.
+        if username == "" :      # End of File. break.
             break
 
         # if student exist, skip.
