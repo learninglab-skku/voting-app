@@ -387,11 +387,9 @@ class ResponseStatusView(ListView):
 def createAttendance(student, status):
     
     try: 
-        AttendanceInstance.objects.get(student = student)
-        
-        print("Attendance already exist!")
+        AttendanceInstance.objects.get(student = student, datestamp = datetime.date.today())
 
-    except:
+    except ObjectDoesNotExist:
     
         try:
             attendance = AttendanceInstance(student = student)
