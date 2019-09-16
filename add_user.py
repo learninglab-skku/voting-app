@@ -113,7 +113,7 @@ if switch == 3:
             if student.get_username() == username:
                 no_insert_flag = 1       # don't create user.         
 
-                if student.section.section_no != int(section):
+                if (student.section.section_no != int(section)) or (student.group.group_no != int(group)):
                     student.section = Section.objects.get(section_no=section, course__year=year, course__title=title)
                     student.group = Group.objects.get(section__section_no=section, section__course__year=year, section__course__title=title, group_no=group)
                     student.save()
