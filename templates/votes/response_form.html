@@ -10,8 +10,17 @@
     <p> This is your {% if not form.instance.pk %} first {% else %} second {% endif %} vote. </p>
     <form method="POST" action="">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.non_field_errors }}
+        <div class="fieldWrapper">
+			{{ form.v_response.errors }}
+			{{ form.v_response}}
+		</div>
+        
         <input type="submit", class="button", value="Vote">
     </form>
+
+
+</div>
+
 </div>
 {% endblock %}

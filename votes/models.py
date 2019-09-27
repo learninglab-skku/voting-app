@@ -5,6 +5,9 @@ from django.urls import reverse
 from courses.models import Lecture, Section
 from accounts.models import Student
 
+from django.core.validators import MaxValueValidator, MinValueValidator 
+
+
 class StatusManager(models.Manager):
     def no_vote(self):
         return self.get(code=0)
@@ -27,6 +30,8 @@ class Question(models.Model):
     answer = models.TextField(blank=True)
     correct_number = models.IntegerField(default=1) # correct answer for the problem
     lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE)
+    is_TF = models.BooleanField(Lecture, default=False)
+
 
     # custom model manager
     objects = StatusManager()
@@ -38,16 +43,18 @@ class Question(models.Model):
         return reverse('votes:detail', kwargs={'pk': self.pk, 'se': Section.objects.first().section_no})
 
 
+
+
 class Response(models.Model):
     CHOICE = [(1, 1), (2, 2), (3, 3), (4, 4)]   
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     contents = models.ImageField(null=True, blank=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    vote1 = models.IntegerField(choices=CHOICE, null=True)  # 1st vote for multiple choice question
-    vote2 = models.IntegerField(choices=CHOICE, null=True)  # 2nd vote for multiple choice question
+    vote1 = models.IntegerField(blank = True, null=True)  # 1st vote for multiple choice question
+    vote2 = models.IntegerField(blank = True, null=True)  # 2nd vote for multiple choice question
     answer1 = models.CharField(max_length=255, null=True)  # 1st simple answers
     answer2 = models.CharField(max_length=255, null=True)  # 2nd simple answers
-    v_response = models.IntegerField(choices=CHOICE, default=1)  # temp. place holder for vote
+    v_response = models.IntegerField(blank = True, default=1, validators=[MinValueValidator(1), MaxValueValidator(8)])  # temp. place holder for vote
     a_response = models.CharField(max_length=255, null=True)     # temp. place holder for simple answer
     timestamp = models.DateTimeField(auto_now_add=True)
 
