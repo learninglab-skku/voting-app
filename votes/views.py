@@ -209,44 +209,15 @@ def count_voting(request, pk):
 #             return HttpResponseRedirect(reverse("votes:list"))
 
 #     return render(request, "votes/question_detail.html", context)
-CHOICE4 = [(1, 1), (2, 2), (3, 3), (4, 4)]
-CHOICE8 = [(1, 1), (2, 2), (3, 3), (4, 4),(5, 5), (6, 6), (7, 7), (8, 8)]
-
-from django import forms
-class ResponseForm1(forms.ModelForm):
-    v_response = forms.ChoiceField(choices=CHOICE4)
-    class Meta:
-        model = Response
-        fields = ['v_response']
-
-class ResponseForm2(forms.ModelForm):
-    v_response = forms.ChoiceField(choices=CHOICE8)
-    class Meta:
-        model = Response
-        fields = ['v_response']
-
 
 @method_decorator(student_required, name='dispatch')
 class ResponseCreateView(LoginRequiredMixin, mixins.SuccessMessageMixin, CreateView):
     model = Response
-    #fields = ('v_response', )
+    fields = ('v_response', )
     success_message = "You have submitted your first vote! It's time to discuss."
     # queryset = VoteQuestion.objects.filter(is_active=True, code=1)
 
-    ## Set the Form
-    try:
-        question = Question.objects.get(is_active=True, code=1)
-        if question.is_TF == True:
-            form_class = ResponseForm1 
-        else:
-            form_class = ResponseForm2
-
-    except ObjectDoesNotExist:
-        form_class = ResponseForm1
-   
-    ## What to do with the Input Form
     def form_valid(self, form):
-
         print("first_vote")
         try:
             question = Question.objects.get(is_active=True, code=1)
@@ -280,20 +251,8 @@ class ResponseCreateView(LoginRequiredMixin, mixins.SuccessMessageMixin, CreateV
 @method_decorator(student_required, name='dispatch')
 class ResponseUpdateView(LoginRequiredMixin, UpdateView):
     model = Response
-    #fields = ('v_response', )
-
-    ## Set the Form
-    try:
-        question = Question.objects.get(is_active=True, code=2)
-        if question.is_TF == True:
-            form_class = ResponseForm1 
-        else:
-            form_class = ResponseForm2
-
-    except ObjectDoesNotExist:
-        form_class = ResponseForm1
+    fields = ('v_response', )
    
-    ## What to do with the Input Form
     def form_valid(self, form):
         print("second_vote")
         try:
