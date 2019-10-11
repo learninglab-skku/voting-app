@@ -6,6 +6,8 @@ secrets.json
 
 # Database
 db.sqlite3
+Data Analytics.ipynb
+.ipynb_checkpoints
 
 *.pyc
 *~
