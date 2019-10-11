@@ -217,49 +217,55 @@ class ResponseCreateView(LoginRequiredMixin, mixins.SuccessMessageMixin, CreateV
     def form_valid(self, form):
         print("first_vote")
         try:
-            question = Question.objects.get(is_active=True, code=1)
+            question = Question.objects.get(is_active=True)
+            try:
+                response = Response.objects.get(question_id=question.id,
+                                                student__student_no=self.request.user.student.student_no)
+                messages.success(self.request, "You've already submitted the first vote!")
+                return redirect("votes:edit", pk=response.pk)
+            except ObjectDoesNotExist:
+                form.instance.question = question
+                form.instance.student = self.request.user.student
+                form.instance.vote1 = form.cleaned_data['v_response']
+                super().form_valid(form)
+                # print(self.object)    # Response object (15)
+                return redirect("votes:edit", pk=self.object.pk)
         except ObjectDoesNotExist:
             print("Error")
             messages.success(self.request, "First vote is not ready. Please wait.")
             return redirect("votes:voting")
 
-        try:
-            response = Response.objects.get(question_id=question.id,
-                student__student_no=self.request.user.student.student_no)
-            messages.success(self.request, "You've already voted!")
-            # print(self.object)    # None
-            return redirect("votes:edit", pk=response.pk)
-        except:
-            form.instance.question = question
-            form.instance.student = self.request.user.student
-            form.instance.vote1 = form.cleaned_data['v_response']
-            super().form_valid(form)
-            # print(self.object)    # Response object (15)
-            return redirect("votes:edit", pk=self.object.pk)
-
     # Problematic scenarios
     # 1. After the first vote, students are redirected to UpdateView.  At this point,
     #    they move back to votes/voting and vote again, then new instance of response created.
     #    (RESOLVED!)
-    # 2. Did not submit the first vote and the question status is moved to 2nd vote.
+    # 2. Did not submit the first vote and the question status is moved to 2nd vote. 
+    #    (RESOLVED by checking voting results on the screen.)
     # 3. Similar to 1, students can vote again after log out and re-log in.
     #    (RESOLVED!)
 
 @method_decorator(student_required, name='dispatch')
-class ResponseUpdateView(LoginRequiredMixin, UpdateView):
+class ResponseUpdateView(LoginRequiredMixin, mixins.SuccessMessageMixin, UpdateView):
     model = Response
     fields = ('v_response', )
-   
+
     def form_valid(self, form):
         print("second_vote")
         try:
-            Question.objects.get(is_active=True, code=2)
-            form.instance.vote2 = form.cleaned_data['v_response']
-            # form.instance.question2 = form.cleaned_data['question']
-            messages.success(self.request, "You have submitted your second vote!")
-            super().form_valid(form)
-            createAttendance(self.request.user.student, True)
-            return redirect("accounts:student_view")
+            question = Question.objects.get(is_active=True, code=2)
+            try:
+                Response.objects.get(question_id=question.id,
+                                     student__student_no=self.request.user.student.student_no,
+                                     vote2__isnull=False)
+                messages.success(self.request, "You've already submitted the second vote!")
+                return redirect("accounts:student_view")
+            except ObjectDoesNotExist:
+                form.instance.vote2 = form.cleaned_data['v_response']
+                # form.instance.question2 = form.cleaned_data['question']
+                messages.success(self.request, "You have submitted your second vote!")
+                super().form_valid(form)
+                createAttendance(self.request.user.student, True)   # created at every 2nd vote
+                return redirect("accounts:student_view")
 
         except ObjectDoesNotExist:
             messages.success(self.request, "Please wait. Second vote is not ready.")
