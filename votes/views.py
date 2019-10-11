@@ -27,6 +27,7 @@ from . import mixins
 from grade.models import AttendanceInstance
 import datetime
 
+
 @method_decorator(teacher_required, name='dispatch')
 class QuestionListView(ListView):
     model = Question
@@ -36,14 +37,11 @@ class QuestionListView(ListView):
 class QuestionView(View):
     # model = Question
     def get(self, request, *args, **kwargs):
-        response_list = Response.objects.filter(question = kwargs["pk"])
-        student_list = Student.objects.filter(section__section_no = kwargs["se"]).order_by('group')
+        response_list = Response.objects.filter(question=kwargs["pk"])
+        student_list = Student.objects.filter(section__section_no=kwargs["se"]).order_by('group')
         question = get_object_or_404(Question, pk=kwargs["pk"])
-        section_list = Section.objects.all();
-
+        section_list = Section.objects.all()
         response_status = []
-
-
 
         ##### for making attendance instance
         # response_all = Response.objects.all()
@@ -51,16 +49,15 @@ class QuestionView(View):
         #     if response.vote2:
         #         createAttendance(response.student,True,response.timestamp.date())
 
-
         # find groups that have 3 or more wrong answers.
-        wrong_limit = 3;
-        wrong_counter1 = 0;
-        wrong_counter2 = 0;
-        wrong_group1= [];
-        wrong_group2= [];
+        wrong_limit = 3
+        wrong_counter1 = 0
+        wrong_counter2 = 0
+        wrong_group1 = []
+        wrong_group2 = []
 
         # make data for student attendance table.
-        # group / students (student object, response existance(0 or 1 or 2 depending on vote)) / 
+        # group / students (student object, response existance(0 or 1 or 2 depending on vote)) /
 
         for i in range(max(student_list, key = lambda student: student.group.group_no).group.group_no): #전체 그룹들에 대하여
             response_status.append([])
