@@ -1,5 +1,6 @@
 # Passwd file
 secrets.json
+/learninglab/settings/base.py
 
 # Text backup files
 *.bak
