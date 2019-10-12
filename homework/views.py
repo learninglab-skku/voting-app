@@ -12,9 +12,9 @@ from django.conf import settings # 추천!
 from django.core import serializers
 
 
-from .models import *
-from accounts.models import *
-from courses.models import *
+from .models import Homework, HomeworkTracker
+from accounts.models import Student
+from courses.models import Course, Section
 
 from django.utils import timezone
 import copy
@@ -29,45 +29,40 @@ from learninglab.decorators import student_required, teacher_required
 class HomeworkListView(View):
     def get(self, request, *args, **kwargs):
         
-        ### Who is user?
-        user_id = request.user.get_username()
-        student = get_student_info(user_id)
-        print("user is : ", request.user.pk)
+        # ## Who is user?
+        # user_id = request.user.get_username()
+        # student = get_student_info(user_id)
+        # print("user is : ", request.user.pk)
         course_pk = Student.objects.get(user=request.user.pk).section.course.pk
-        print(course_pk)
+        # print(course_pk)
 
-        
-        ### Get homework list for the user
-        hm = Homework.objects.filter(Course=course_pk) #TODO: 여기에 Course ID로 filtering
-
+        # ## Get homework list for the user
+        hm = Homework.objects.filter(course=course_pk)  # TODO: 여기에 Course ID로 filtering
 
         return render(request, 'homework/homework_list.html', {'homework_list': hm})
-
-
 
 
 def HomeworkDetailView(request, no):
     user_id = request.user.get_username()
     student = get_student_info(user_id)
-    
-    #hw = Homework.objects.get(title=no, Course = get_user_course_id(user_id))
+  
+    # hw = Homework.objects.get(title=no, Course = get_user_course_id(user_id))
     hw = Homework.objects.get(title=no)
-    
 
-    ### Make a Pre-filled Google Forms URL with user params
+    # ## Make a Pre-filled Google Forms URL with user params
     google_forms_url = "https://docs.google.com/forms/d/e/1FAIpQLSfQZ_BAnhg2zAuU9wGN-JqMiHWibh5LCOrs7cNBWabqvlrQyw/viewform"
     name_field = "entry.1938219891"
     std_id_field = "entry.2018654278"
     section_field = "entry.1692224190"
     hw_no_field = "entry.584536632"
     
-    personal_url_params =  google_forms_url + "?" + \
-                            name_field+"="+student.name + \
-                            "&" + std_id_field + "=" + str(student.student_no) + \
-                            "&" + section_field + "=" + str(Section.objects.get(pk = student.section_id).section_no) + \
-                            "&" + hw_no_field + "="
+    personal_url_params = google_forms_url + "?" + \
+                          name_field+"=" + student.name + \
+                          "&" + std_id_field + "=" + str(student.student_no) + \
+                          "&" + section_field + "=" + str(Section.objects.get(pk=student.section_id).section_no) + \
+                          "&" + hw_no_field + "="
 
-    return render(request, 'homework/homework_detail.html', {'hw':hw, 'google_forms_url':personal_url_params})
+    return render(request, 'homework/homework_detail.html', {'hw': hw, 'google_forms_url': personal_url_params})
 
 
 
@@ -87,18 +82,16 @@ class HomeworkStartView(View):
         h_instance = Homework.objects.get(title=hw_no) #section을 타고 course를 타야한다.
         
         ### It Not exist, make new one 
-        if not HomeworkTraker.objects.filter(Student=s_instance.pk, Homework=h_instance.pk).exists():
-            new_row = HomeworkTraker(Student=s_instance, Homework=h_instance)
+        if not HomeworkTracker.objects.filter(student=s_instance.pk, homework=h_instance.pk).exists():
+            new_row = HomeworkTracker(student=s_instance, homework=h_instance)
             new_row.save()
 
 
         if type_no == "hw":
             
             ### Get the Start Time
-            print(user_id,  "START on HW ", hw_no," AT :", now)
-
-
-            row = HomeworkTraker.objects.get(Student=s_instance.pk, Homework=h_instance.pk)    
+            print(user_id, "START on HW ", hw_no," AT :", now)
+            row = HomeworkTracker.objects.get(student=s_instance.pk, homework=h_instance.pk)    
             if row.start_time == None:
                 row.start_time = now
                 row.save()
@@ -110,7 +103,7 @@ class HomeworkStartView(View):
             print(user_id,  "START on Video 1 of  ", hw_no," AT :", now)        
 
 
-            row = HomeworkTraker.objects.get(Student=s_instance.pk, Homework=h_instance.pk)    
+            row = HomeworkTracker.objects.get(student=s_instance.pk, homework=h_instance.pk)    
             if row.start_time_video_1 == None:
                 row.start_time_video_1 = now
                 row.save()
@@ -122,7 +115,7 @@ class HomeworkStartView(View):
             print(user_id,  "START on Video 2 of ", hw_no," AT :", now)
 
 
-            row = HomeworkTraker.objects.get(Student=s_instance.pk, Homework=h_instance.pk)    
+            row = HomeworkTracker.objects.get(student=s_instance.pk, homework=h_instance.pk)    
             if row.start_time_video_2 == None:
                 row.start_time_video_2 = now
                 row.save()
@@ -131,10 +124,9 @@ class HomeworkStartView(View):
         elif type_no == "video_3":
             print("video 2 start")
             ### Get the Start Time
-            print(user_id,  "START on Video 2 of ", hw_no," AT :", now)
+            print(user_id, "START on Video 2 of ", hw_no, " AT :", now)
 
-
-            row = HomeworkTraker.objects.get(Student=s_instance.pk, Homework=h_instance.pk)    
+            row = HomeworkTracker.objects.get(student=s_instance.pk, homework=h_instance.pk)    
             if row.start_time_video_3 == None:
                 row.start_time_video_3 = now
                 row.save()
@@ -155,18 +147,17 @@ def get_student_info(user_id):
     for n in std_list:
         if n.get_username() == user_id:
             return n
-            break;
+            break
     return None
 
 
 def HomeworkAllList(request, hw_no):
     ### return homework list
     print(hw_no)
-    hw_list = Homework.objects.filter(Course_id = hw_no)
+    hw_list = Homework.objects.filter(course_id=hw_no)
     serialized_queryset = serializers.serialize('json', hw_list)
 
     return JsonResponse(serialized_queryset, safe=False)
-
 
 
 ### Called when instructor clicks check button in tracker page
@@ -174,7 +165,7 @@ def HomeworkAllList(request, hw_no):
 def HomeworkCheckList(request, course_id, hw_no):
 
     ### Get Section from Course 
-    sec_list = Section.objects.filter(course= course_id).values_list('pk', flat=True)
+    sec_list = Section.objects.filter(course=course_id).values_list('pk', flat=True)
 
     tmp_list = []
 
@@ -192,7 +183,7 @@ def HomeworkCheckList(request, course_id, hw_no):
     for e in std_list:
         #print(e.student_no, e.name, e.pk)
         s_res.append(e.student_no)
-        hw_time = HomeworkTraker.objects.filter(Student = e.pk, Homework= hw_no)
+        hw_time = HomeworkTracker.objects.filter(student=e.pk, homework=hw_no)
 
         if hw_time.exists():
             # if hw_time[0].start_time != None:
@@ -230,16 +221,12 @@ def HomeworkCheckList(request, course_id, hw_no):
     return JsonResponse(row_json, safe=False)
 
 
-
-
 class HomeworkTrackerView(View):
-    def get(self, request):
-        
+    def get(self, request):       
         ### Authentication
         if not request.user.is_superuser :
             return redirect('/')
-        
 
         course_list = Course.objects.all()
 
-        return render(request, 'homework/homework_tracker.html', {'course_list':course_list})
+        return render(request, 'homework/homework_tracker.html', {'course_list': course_list})

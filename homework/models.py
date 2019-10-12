@@ -26,8 +26,6 @@ class Homework(models.Model):
     def __str__(self):
         return f"(Homework {self.title})"
 
-        
-
 
 class HomeworkTracker(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)

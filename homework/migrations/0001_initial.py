@@ -29,14 +29,14 @@ class Migration(migrations.Migration):
                 ('video_clip_link_3', models.CharField(blank=True, max_length=255, null=True)),
                 ('questions', models.TextField(blank=True)),
                 ('is_active', models.BooleanField(default=False)),
-                ('Course', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='courses.Course')),
+                ('course', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='courses.Course')),
             ],
             options={
-                'unique_together': {('title', 'Course')},
+                'unique_together': {('title', 'course')},
             },
         ),
         migrations.CreateModel(
-            name='HomeworkTraker',
+            name='HomeworkTracker',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('start_time', models.DateTimeField(null=True)),
@@ -44,11 +44,11 @@ class Migration(migrations.Migration):
                 ('start_time_video_2', models.DateTimeField(null=True)),
                 ('start_time_video_3', models.DateTimeField(null=True)),
                 ('end_time', models.DateTimeField(null=True)),
-                ('Homework', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='homework.Homework')),
-                ('Student', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='accounts.Student')),
+                ('homework', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='homework.Homework')),
+                ('student', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='accounts.Student')),
             ],
             options={
-                'unique_together': {('Student', 'Homework')},
+                'unique_together': {('student', 'homework')},
             },
         ),
     ]
