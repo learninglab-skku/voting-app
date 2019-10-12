@@ -5,9 +5,7 @@ from accounts.models import Student
 
 class Homework(models.Model):
     title = models.CharField(max_length=255)
-
-    Course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
-    
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     due_date = models.CharField(max_length=255, null=True)
 
     optional_readings = models.CharField(max_length=255, null=True, blank=True)
@@ -20,11 +18,10 @@ class Homework(models.Model):
     
     # quetions_image = models.ImageField(upload_to="homework/", null=True)
     questions = models.TextField(blank=True)
-    
     is_active = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = (('title', 'Course'),)
+        unique_together = (('title', 'course'),)
 
     def __str__(self):
         return f"(Homework {self.title})"
@@ -32,9 +29,9 @@ class Homework(models.Model):
         
 
 
-class HomeworkTraker(models.Model):
-    Student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
-    Homework = models.ForeignKey(Homework, on_delete=models.CASCADE, null=True)
+class HomeworkTracker(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
+    homework = models.ForeignKey(Homework, on_delete=models.CASCADE, null=True)
 
     start_time = models.DateTimeField(null=True)
     start_time_video_1 = models.DateTimeField(null=True)
@@ -43,4 +40,4 @@ class HomeworkTraker(models.Model):
     end_time = models.DateTimeField(null=True)
 
     class Meta:
-        unique_together =(('Student', 'Homework'),)
+        unique_together =(('student', 'homework'),)
