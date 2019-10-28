@@ -32,6 +32,8 @@ import datetime
 class QuestionListView(ListView):
     model = Question
 
+    ordering = ['-id']
+
 
 @method_decorator(teacher_required, name='dispatch')
 class QuestionView(View):
