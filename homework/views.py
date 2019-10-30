@@ -41,6 +41,8 @@ class HomeworkListView(View):
 
         return render(request, 'homework/homework_list.html', {'homework_list': hm})
 
+    ordering = ['-id']
+
 
 def HomeworkDetailView(request, no):
     user_id = request.user.get_username()
