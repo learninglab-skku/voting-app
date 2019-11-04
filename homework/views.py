@@ -37,7 +37,7 @@ class HomeworkListView(View):
         # print(course_pk)
 
         # ## Get homework list for the user
-        hm = Homework.objects.filter(course=course_pk)  # TODO: 여기에 Course ID로 filtering
+        hm = Homework.objects.filter(course=course_pk).order_by('title')  # TODO: 여기에 Course ID로 filtering
 
         return render(request, 'homework/homework_list.html', {'homework_list': hm})
 
