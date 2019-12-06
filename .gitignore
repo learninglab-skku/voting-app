@@ -7,7 +7,7 @@ secrets.json
 
 # Database
 db.sqlite3
-Data Analytics.ipynb
+*.ipynb
 .ipynb_checkpoints
 
 *.pyc
@@ -26,4 +26,8 @@ em2_*.csv
 
 # Txt files
 students_to_delete.txt
+
+# Excel files
+*.xlsx
+*.xls
 

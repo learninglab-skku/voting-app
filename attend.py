@@ -5,7 +5,7 @@ from datetime import date
 # https://www.stavros.io/posts/standalone-django-scripts-definitive-guide/
 import os, sys
 
-proj_path = "/home/jun/learninglab/"
+proj_path = "./"
 # This is so Django knows where to find stuff.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.production")
 sys.path.append(proj_path)
@@ -26,9 +26,9 @@ YEAR = 2019
 spring = range(3,7)
 fall = range(9,13)
 classes = ['TUESDAY', 'THURSDAY']
-filename = "44.xls"
-section_number = 44
-semester = spring
+filename = "41.xls"
+section_number = 41
+semester = fall
 
 # prepare Excel file for reading
 xl_workbook = open_workbook(filename)
@@ -76,21 +76,24 @@ for month in semester:
                         sid = st.student.student_no
                         for i in range(xl_sheet.nrows):
                             row_value = xl_sheet.row_values(i)
+                            #print(sid, row_value[4])
                             try:
-                                if row_value[4] == sid:
-                                    # print(i, sid)
+                                if int(row_value[4]) == int(sid):
                                     # calculate column number using class_date
                                     # order of the class
                                     order = lecture_date.index(class_date) # 0, 1,
                                     # print(order)
                                     # Excel file column index no: 12 + 3k + l
                                     cols = 12 + 3 * (order // 2) + (order % 2)
-                                    # print(cols)
+                                    #print("#############attend!##############")
                                     sheet1.write(i, cols, 'x')
                             except:
+                                #print("sid {0} not found. student was absent".format(sid))
                                 pass
-                            #    print("sid {0} not found. student was absent".format(sid))
                 except:
                     print("attendace was not checked on {0}.".format(class_date))
+                    
 # sheet1.write(0,0,'x')
+
+print("finished!")
 book.save(filename)
