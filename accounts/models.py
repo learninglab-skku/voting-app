@@ -20,8 +20,9 @@ class Major(models.Model):
         return self.title
 
 
+# made changes to the primary key.
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     student_no = models.IntegerField(unique=True, null=True)
     name = models.CharField(max_length=255, null=True)
     major = models.ForeignKey(Major, on_delete=models.CASCADE, null=True)
