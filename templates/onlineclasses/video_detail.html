@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %} Video Detail | {{block.super}} {% endblock %}
+
+{% block content %}
+
+    <hr>
+    <div id="votingCount">
+
+    </div>
+    <p>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/dsMV45JD__s" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </p>
+
+    <div class="row">
+        <div class="small-4 columns">
+            <img src="{{ question.contents.url }}">
+        </div>
+    </div>
+
+
+    <div>
+        <div class="grid-x grid-padding-x">
+            <div>
+                <form action="", method="POST">
+                    {% csrf_token %}
+                    <input type="submit", class="success button", value="1st Vote", name="submit_1st_vote">
+
+                    <select>
+                        <option value="">Select...</option>
+
+                        {% for choice in section_list %}
+                        <option value="/votes/q{{question.pk}}/{{section.section_no}}">{{section.section_no}}</option>
+                        {% endfor %}
+
+                    </select>
+
+                    <input type="submit", class="secondary button", value="2nd Vote", name="submit_2nd_vote">
+
+                    <select>
+                        <option value="">Select...</option>
+
+                        {% for choice in section_list %}
+                        <option value="/votes/q{{question.pk}}/{{section.section_no}}">{{section.section_no}}</option>
+                        {% endfor %}
+
+                    </select>
+
+                    <input type="submit", class="button", value="Discussion Download Link", name="submit_link">
+                    <input type="text", class="text", value="Enter..", name="download_link">
+
+
+
+                </form>
+            </div>
+        </div>
+    </div> 
+
+    <br><br>
+
+
+<!-- Show current wrong group status-->
+    <h5> Next Video Token : 
+
+
+    </h5>
+
+
+
+
+
+{% endblock %}

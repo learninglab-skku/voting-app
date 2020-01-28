@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'homework',
     'django_extensions',
     'grade',
+    'onlineclasses'
 
 ]
 

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %} Votes | {{block.super}} {% endblock %}
+
+{% block content %}
+    {% if video_list %}
+    <ul>
+        {% for video in video_list %}
+        <li>
+            <a href="{{ video.get_absolute_url }}"> {{ video }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p> There are no questions in the question list.</p>
+    {% endif %}
+{% endblock %}

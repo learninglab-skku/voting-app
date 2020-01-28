@@ -37,6 +37,7 @@ urlpatterns = [
     path('votes/', include('votes.urls')),
     path('homework/', include('homework.urls')),
     path('grade/', include('grade.urls')),
+    path('onlineclasses/', include('onlineclasses.urls')),
     # wagtail
     # path('cms/', include(wagtailadmin_urls)),
     # path('documents/', include(wagtaildocs_urls)),
