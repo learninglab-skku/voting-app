@@ -18,7 +18,7 @@ class Video(models.Model):
         return f"{self.video_name} ({self.lecture}, {self.course})"
 
     def get_absolute_url(self):
-        return reverse('onlineclasses:detail', kwargs={'pk': self.pk, })
+        return reverse('onlineclasses:detail', kwargs={'pk': self.pk, 'lecture_pk':self.lecture.pk})
 
 
 class VideoTracker(models.Model):

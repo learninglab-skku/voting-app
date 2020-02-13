@@ -30,14 +30,15 @@ from grade.models import AttendanceInstance
 from votes.models import Response, Question
 import datetime
 
+from votes.views import createAttendance
 
 # #TODO:
-# 	AttendanceInstance should be made when you click "2nd Vote Submit"
-# 	After submitting, no change is allowed. If submit value is empty, ask to resubmit
-#	Need for a activate flag on videos. -> related to attendance.
-#	What if one student does not show up?
-#	Is there a need for the students to know who didn't vote yet?
-#	Check if link is viable.
+# 	AttendanceInstance should be made when next video
+#	Is there a need for the students to know who didn't vote yet? => 3/4 format
+#	Disable not ready buttons.
+#	Check if link is viable. ## CHECK URL Link. # Do it last
+#	Attendance Created depending on the date?
+#	Auto Download from google drive link.
 
 @method_decorator(student_required, name='dispatch')
 class VideoDetailView(CreateView):
@@ -52,9 +53,14 @@ class VideoDetailView(CreateView):
 		#createVideoTracker(request,video,cur_student)
 		createResponse(request,video,cur_student)
 
+		#disable submit button if check is not successful
+		cur_response = groupCheckFirstVote(request,video,cur_student)
+		cur_discussion = groupCheckDiscussion(request,video,cur_student)
+
+
 		return render(request,
             "onlineclasses/video_detail.html",
-            {"video": video,})
+            {"video": video, "student": cur_student, "response":cur_response, "discussion":cur_discussion})
 
 	def post(self, request, *args, **kwargs):
 
@@ -62,16 +68,15 @@ class VideoDetailView(CreateView):
 
 		video = Video.objects.get(pk = kwargs["pk"])
 		cur_student = request.user.student
+		student_response = Response.objects.filter(student=cur_student,question=video.question).first()
 
 		# On first Vote
 		if request.POST.get("first_vote") is not None:
 
-			student_response = Response.objects.filter(student=cur_student,question=video.question).first()
-
 			# If first vote is not selected.
 			if request.POST.get("first_vote") is "":
 				messages.warning(request,"You should select your first vote")
-				return redirect("onlineclasses:detail", pk=kwargs["pk"])
+				return redirect("onlineclasses:detail", pk=kwargs["pk"],lecture_pk = video.lecture.pk)
 
 			# if vote1 exist, nothing happens
 			if student_response.vote1 is None:
@@ -89,11 +94,13 @@ class VideoDetailView(CreateView):
 			# If discussion link is not submitted.
 			if request.POST.get("discussion_link") is "":
 				messages.warning(request,"Discisson_link does not exist")
-				return redirect("onlineclasses:detail", pk=kwargs["pk"])
+				return redirect("onlineclasses:detail", pk=kwargs["pk"],lecture_pk = video.lecture.pk)
 
-			# If some sudents in the group didn't submit vote1.
+
+			# If some students in the group didn't submit vote1.
 			if groupCheckFirstVote(request,video,cur_student) is False:
 				messages.warning(request,"All of the group members should finish the first vote to proceed.")
+
 			# If everybody did vote1
 			else:
 				updateDiscussionLink(request,video,cur_student.group,request.POST.get("discussion_link"))
@@ -102,8 +109,33 @@ class VideoDetailView(CreateView):
 
 		# On second vote
 		elif request.POST.get("second_vote") is not None:
+
+			# if second vote is not selected
 			if request.POST.get("second_vote") is "":
 				messages.warning(request,"second vote does not exist")
+
+			# If group leader did not submit the discussion link
+			if groupCheckDiscussion(request,video,cur_student) is False:
+				messages.warning(request,"Discussion Link should be submitted by the group leader to proceed.")
+
+			# If discussion link is submitted
+			else:
+				# if vote2 exist, nothing happens
+				if student_response.vote2 is None:
+					student_response.vote2 = request.POST.get("second_vote")
+					student_response.save()
+					messages.success(request,"Second vote is set to" + str(student_response.vote2) +".")
+
+					# make student attendance
+					createAttendance(cur_student,True)
+
+				else:
+					messages.warning(request,"You've already done the second vote as "+str(student_response.vote2))
+
+		# On Next Video.
+		elif "finish" in self.request.POST:
+			return redirect("onlineclasses:list",lecture_pk = video.lecture.pk)
+
 
 		#test
 		# if request.POST.get("asdf") is not None:
@@ -115,11 +147,19 @@ class VideoDetailView(CreateView):
 		#messages.success(request, 'looking good!')
 
 
-		return redirect("onlineclasses:detail", pk=kwargs["pk"])
+		return redirect("onlineclasses:detail", pk=kwargs["pk"],lecture_pk = video.lecture.pk)
 
 
-class VideoListView(ListView):
-    model = Video
+
+class VideoListView(View):
+
+    def get(self, request, *args, **kwargs):
+        video_list = Video.objects.filter(lecture = kwargs["lecture_pk"])
+
+        return render(request,
+            "onlineclasses/video_list.html",
+            {"video_list": video_list})
+
 
 
 # Group is unique for each group!
@@ -131,21 +171,42 @@ def groupCheckFirstVote(request, video, student):
 	group_members=Student.objects.filter(group=group)
 	pass_flag = True
 
+	if not group_members:
+		messages.warning(request,"group_members is None!")
+		return
+
+	#Count total vote
+	voted = 0
+	total = group_members.count()
+
 	#Check if each student has done their first vote.
 	#Some Students might not have a Response instance at all.
 	for each_student in group_members:
+		#messages.info(request,str(each_student))
 		each_response = Response.objects.filter(student=each_student,question=video.question)
-		if each_response in None:
+		#messages.info(request,str(each_student)+' '+str(each_response.first().vote1))
+
+		# If there is no response yet.
+		if each_response is None:
 			pass_flag = False
 
 			# add messages.warning here!
 
-			return pass_flag
+			continue
 
-		if each_response.vote1 is None:
+		# If there is no vote1 yet.
+		try:
+			each_response.first().vote1
+		except:
+			messages.warning(request,str(each_student)+"did not vote!")
 			pass_flag = False
 
+		# If voted, append 1
+		voted += 1
+
 			# add messages.warning here!
+
+
 
 	return pass_flag
 
@@ -193,19 +254,20 @@ def createResponse(request,video,student):
 			new_response = Response.objects.create(student=student,question=video.question)
 
 			# to check
-			messages.info("new response is created")
+			#messages.info(request,"new response is created")
 		else:
 			# to check
-			messages.info(request,str(student_response)+"already exist!")
+			#essages.info(request,str(student_response)+"already exist!")
+			pass
 
 		return
 
 def updateDiscussionLink(request,video,group,link):
 
-	dl = DiscissonLink.objects.filter(video=video,group=group)
+	dl = DiscussionLink.objects.filter(video=video,group=group)
 
 	if not dl:
-		new_dl = DiscissonLink.objects.create(video=video,group=group,link=link)
+		new_dl = DiscussionLink.objects.create(video=video,group=group,link=link)
 	else:
 		dl.first().link = link
 		dl.first().save()

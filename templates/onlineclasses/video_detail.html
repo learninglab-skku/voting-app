@@ -53,6 +53,8 @@
 
                 <!-- Submit Discussion
                 <input type="submit", class="button", value="Discussion Download Link", name="submit_link">-->
+
+                {% if student.is_leader %}
                 <form action="", method="POST">
                     {% csrf_token %}
 
@@ -60,10 +62,15 @@
                     <div class ="input-group">
                         <input class = "input-group-field" type = "text" placeholder="Enter Link.." name="discussion_link">
                         <div class = "input-group-button">
-                            <input type="submit" class="button" value="Submit" name = "_discussion_submit">
+                            <input type="submit" class="button" value="Submit" name = "_discussion_submit"
+                            {% if not response %}
+                            disabled
+                            {% endif %}
+                            >
                         </div>
                     </div>
                 </form>
+                {% endif %}
 
 
                 <!-- Second Vote
@@ -82,16 +89,23 @@
                             </select>
                         </div>
                         <div class = "input-group-field">
-                            <input type="submit" class="button" value="Submit" name = "_second_submit">
+                            <input type="submit" class="button" value="Submit" name = "_second_submit" 
+                            {% if not discussion %}
+                            disabled
+                            {% endif %}
+                                >
                         </div>
                     </div>
 
                     <br><br>
+                </form>
+
+                <form>
 
 
                     <!-- Next Video -->
                     <div>
-                    <input type="submit", class="alert button", value="Next Video", name="next_video">
+                    <input type="submit", class="alert button", value="Back to Video List", name="finish">
                     </div>
 
 

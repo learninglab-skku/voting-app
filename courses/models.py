@@ -23,7 +23,7 @@ class Course(models.Model):
         return f"{self.title}: {self.semester}, {self.year}"
 
     def get_absolute_url(self):
-        return reverse('courses:detail', kwargs={'pk': self.pk})
+        return reverse('courses:lecture_list', kwargs={'course_pk': self.pk})
 
 
 class Lecture(models.Model):
@@ -34,6 +34,9 @@ class Lecture(models.Model):
 
     class Meta:
         ordering = ['order', ]
+
+    def get_absolute_url(self):
+        return reverse('onlineclasses:list', kwargs={'lecture_pk': self.pk})
 
     def __str__(self):
         return f"Lecture {self.order} ({self.course.title})"
@@ -52,4 +55,4 @@ class Group(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, default=41)
 
     def __str__(self):
-        return f"{self.group_no}"
+        return f"{self.group_no} in {self.section}"

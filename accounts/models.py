@@ -27,6 +27,7 @@ class Student(models.Model):
     major = models.ForeignKey(Major, on_delete=models.CASCADE, null=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
+    is_leader = models.BooleanField(default = False)
 
     def __str__(self):
         return self.user.username

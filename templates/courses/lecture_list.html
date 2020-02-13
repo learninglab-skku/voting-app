@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %} Lectures | {{block.super}} {% endblock %}
+
+{% block content %}
+    {% if lecture_list %}
+    <ul>
+        {% for lecture in lecture_list %}
+        <li>
+            <a href="{{ lecture.get_absolute_url }}"> {{ lecture }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p> There are no courses in the course list.</p>
+    {% endif %}
+
+
+
+{% endblock %}
