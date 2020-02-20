@@ -2,7 +2,6 @@ import datetime
 from django.db import models
 from django.urls import reverse
 
-
 class Course(models.Model):
     YEAR_CHOICES = []
     for r in range(2016, (datetime.datetime.now().year + 2)):
@@ -36,7 +35,12 @@ class Lecture(models.Model):
         ordering = ['order', ]
 
     def get_absolute_url(self):
-        return reverse('onlineclasses:list', kwargs={'lecture_pk': self.pk})
+        from onlineclasses.models import Video
+        video_set = Video.objects.filter(lecture = self, index = 1)
+        if not video_set:
+            return
+        video = video_set.first()
+        return reverse('onlineclasses:detail', kwargs={'lecture_pk': self.pk, 'pk':video.pk})
 
     def __str__(self):
         return f"Lecture {self.order} ({self.course.title})"

@@ -133,9 +133,16 @@ class VideoDetailView(CreateView):
 					messages.warning(request,"You've already done the second vote as "+str(student_response.vote2))
 
 		# On Next Video.
-		elif "finish" in self.request.POST:
-			return redirect("onlineclasses:list",lecture_pk = video.lecture.pk)
+		elif "proceed" in self.request.POST:
+			next_video = checkLastVideo(request,video)
+			if next_video is None: # None stands for true
+				createAttendance(cur_student,True)
+				messages.success(request,"Well Done! Your attendance is recorded.")
+				return redirect("courses:lecture_list", course_pk = video.lecture.course.pk)
 
+			else:
+
+				return redirect("onlineclasses:detail", pk=next_video.pk,lecture_pk = video.lecture.pk)
 
 		#test
 		# if request.POST.get("asdf") is not None:
@@ -412,7 +419,7 @@ def createResponse(request,video,student):
 			#messages.info(request,"new response is created")
 		else:
 			# to check
-			#essages.info(request,str(student_response)+"already exist!")
+			#messages.info(request,str(student_response)+"already exist!")
 			pass
 
 		return
@@ -426,3 +433,13 @@ def updateDiscussionLink(request,video,group,link):
 	else:
 		dl.first().link = link
 		dl.first().save()
+
+def checkLastVideo(request,video):
+
+	vi = video.index
+	vl = Video.objects.filter(lecture=video.lecture,index = vi+1)
+
+	if not vl:
+		return None
+
+	return vl.first()
