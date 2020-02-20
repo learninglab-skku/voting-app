@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_mathjax',
-    'user_messages',
     'courses',
     'accounts',
     'votes',
@@ -117,7 +116,7 @@ with open(os.getcwd()+'/learninglab/settings/db_password.json') as file:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
+        'NAME': 'llab',
         'USER': 'postgres',
         'PASSWORD': DB_PASS,
         'HOST': 'localhost',

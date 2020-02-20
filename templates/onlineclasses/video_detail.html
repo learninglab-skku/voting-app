@@ -2,6 +2,54 @@
 
 {% block title %} Video Detail | {{block.super}} {% endblock %}
 
+{% block javascript %}
+
+    <!--script type="text/javascript" src="querydata.js"></script-->
+    <script type="text/javascript">
+
+
+    setInterval(function () {
+
+
+        $.ajax({
+            url: "{{ request.path }}/ajax/check_vote",
+            type: 'POST',
+            data: {'check': true},
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+     
+            success: function (data) {
+                // alert("help: "+JSON.stringify(data));
+                if (data.vote1) {
+                    document.getElementById("vote1check").innerHTML = data.vote1 + "/" + data.total + " has voted.";
+                    if(data.vote1 == data.total){
+                        document.getElementById("_discussion_submit").disabled=false;
+                    }
+                }
+
+                if(data.discussion){
+                    document.getElementById("_second_submit").disabled=false;
+                }
+
+                if (data.vote2) {
+                    document.getElementById("vote2check").innerHTML = data.vote2 + "/" + data.total + " has voted.";
+                    if(data.vote2 == data.total){
+                        document.getElementById("proceed").disabled=false;
+                    }
+                }
+
+
+            },
+
+            error: function(request,status,error){
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            }
+        });
+    }, 5000);
+
+    </script>
+
+{% endblock %}
+
 {% block content %}
 
     <hr>
@@ -45,7 +93,10 @@
                             </select>
                         </div>
                         <div class = "input-group-field">
-                            <input type="submit" class="button" value="Submit" name = "_first_submit">
+                            <input type="submit" class="button" value="Submit" name = "_first_submit" id = "_first_submit">
+                        </div>
+                        <div class = "input-group-field">
+                            <h5 style='color:#483D8B' id="vote1check"></h5>
                         </div>         
                     </div>           
 
@@ -62,7 +113,7 @@
                     <div class ="input-group">
                         <input class = "input-group-field" type = "text" placeholder="Enter Link.." name="discussion_link">
                         <div class = "input-group-button">
-                            <input type="submit" class="button" value="Submit" name = "_discussion_submit"
+                            <input type="submit" class="button" value="Submit" name = "_discussion_submit" id = "_discussion_submit"
                             {% if not response %}
                             disabled
                             {% endif %}
@@ -89,11 +140,14 @@
                             </select>
                         </div>
                         <div class = "input-group-field">
-                            <input type="submit" class="button" value="Submit" name = "_second_submit" 
+                            <input type="submit" class="button" value="Submit" name = "_second_submit" id = "_second_submit"
                             {% if not discussion %}
                             disabled
                             {% endif %}
                                 >
+                        </div>
+                        <div class = "input-group-field">
+                            <h5 style='color:#483D8B' id="vote2check"></h5>
                         </div>
                     </div>
 
@@ -105,7 +159,11 @@
 
                     <!-- Next Video -->
                     <div>
-                    <input type="submit", class="alert button", value="Back to Video List", name="finish">
+                        <input type="submit", class="alert button", value="Proceed", name="proceed", id="proceed"
+                        {% if not response2 %}
+                        disabled
+                        {% endif %}
+                        >
                     </div>
 
 
@@ -116,5 +174,12 @@
 
 
 
+<!--script type="text/javascript">
+
+    setTimeout(function() {
+      location.reload();
+    }, 5000);
+
+</script-->
 
 {% endblock %}
