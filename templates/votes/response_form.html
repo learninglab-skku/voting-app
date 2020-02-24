@@ -5,6 +5,7 @@
 {% block content %}
 <div class="row columns">
     {{ block.super }}
+    <h5 style = "color : red">Please, do not leave this page. Your vote may be lost.</h5>
     <h3> What do you think? </h3>
     <p> This is your {% if not form.instance.pk %} first {% else %} second {% endif %} vote. </p>
     <form method="POST" action="">

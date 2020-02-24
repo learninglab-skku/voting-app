@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import (
-    ListView, CreateView, UpdateView, View
+    ListView, CreateView, UpdateView, View, DetailView
 )
 from django.core.exceptions import ObjectDoesNotExist
 # from django.views.generic.edit import FormMixin
@@ -18,24 +18,93 @@ import pytz
 # from django.db.models import Count, Q
 
 from .models import Question, Response
+from accounts.models import Student
+from courses.models import Section
 from learninglab.decorators import student_required, teacher_required
 from . import mixins
 # from .forms import VoteForm
 
+from grade.models import AttendanceInstance
+import datetime
 
 @method_decorator(teacher_required, name='dispatch')
 class QuestionListView(ListView):
     model = Question
-    
+
 
 @method_decorator(teacher_required, name='dispatch')
 class QuestionView(View):
     # model = Question
     def get(self, request, *args, **kwargs):
-        question = get_object_or_404(Question, pk=kwargs["pk"])   
+        response_list = Response.objects.filter(question = kwargs["pk"])
+        student_list = Student.objects.filter(section__section_no = kwargs["se"]).order_by('group')
+        question = get_object_or_404(Question, pk=kwargs["pk"])
+        section_list = Section.objects.all();
+
+        response_status = []
+
+
+
+        ##### for making attendance instance
+        # response_all = Response.objects.all()
+        # for response in response_all:
+        #     if response.vote2:
+        #         createAttendance(response.student,True,response.timestamp.date())
+
+
+        # find groups that have 3 or more wrong answers.
+        wrong_limit = 3;
+        wrong_counter1 = 0;
+        wrong_counter2 = 0;
+        wrong_group1= [];
+        wrong_group2= [];
+
+        # make data for student attendance table.
+        # group / students (student object, response existance(0 or 1 or 2 depending on vote)) / 
+
+        for i in range(max(student_list, key = lambda student: student.group.group_no).group.group_no): #전체 그룹들에 대하여
+            response_status.append([])
+            temp_list = [p for p in range(len(student_list)) if student_list[p].group.group_no == i+1]
+            for j in range(len(temp_list)):          # 그룹 안의 학생들에 한해서
+                response_status[i].append([])
+                response_status[i][j].append(student_list[temp_list[j]])
+                response_status[i][j].append(0)
+                for k in range(len(response_list)):
+                    cur_response = response_list[k]
+                    if cur_response.student == response_status[i][j][0]: # 응답목록에 학생이 있는 경우.
+
+                        if cur_response.vote1:       # 첫번째 응답을 한 경우.
+                            response_status[i][j][1] = 1
+                            if cur_response.vote1 != question.correct_number:
+                                wrong_counter1 += 1
+                                #response_status[i][j][1] = 3 # for test
+
+                        if cur_response.vote2:        # 두번째 응답을 한 경우.
+                            response_status[i][j][1] = 2
+                            if cur_response.vote2 != question.correct_number:
+                                wrong_counter2 += 1
+                                # response_status[i][j][1] = 3 # for test
+
+                if wrong_counter1 >= wrong_limit:
+                    wrong_group1.append(i+1) #현재 그룹이 많이 틀렸으면 요주의 배열에 넣는다.
+                    wrong_counter1 = 0;
+                if wrong_counter2 >= wrong_limit:
+                    wrong_group2.append(i+1) #현재 그룹이 많이 틀렸으면 요주의 배열에 넣는다.
+                    wrong_counter2 = 0;
+
+            wrong_counter1 = 0 # for문 끝에서 초기화.
+            wrong_counter2 = 0              
+
+        # make the groups unique. JUST IN CASE.
+        wrong_group1 = sorted(list(set(wrong_group1)))
+        wrong_group2 = sorted(list(set(wrong_group2)))
+
+
         return render(request,
             "votes/question_detail.html",
-            {"question": question})
+            {"question": question, "response_status": response_status, "section_list": section_list, 
+            "wrong_group1" : wrong_group1, "wrong_group2" : wrong_group2})
+
 
     def post(self, request, *args, **kwargs):
         question = get_object_or_404(Question, pk=kwargs["pk"])
@@ -59,7 +128,10 @@ class QuestionView(View):
             qs.update(is_active=False)
             qs.update(code=0)
             return HttpResponseRedirect(reverse("votes:list"))
-        return redirect("votes:detail", pk=kwargs["pk"])
+       # elif "_status" in self.request.POST:
+       # print("Get Status")
+       #     return redirect("votes:status", pk=kwargs["pk"])
+        return redirect("votes:detail", pk=kwargs["pk"], se=kwargs["se"])
 
     
 # for voting count
@@ -189,7 +261,9 @@ class ResponseUpdateView(LoginRequiredMixin, UpdateView):
             # form.instance.question2 = form.cleaned_data['question']
             messages.success(self.request, "You have submitted your second vote!")
             super().form_valid(form)
+            createAttendance(self.request.user.student, True)
             return redirect("accounts:student_view")
+
         except ObjectDoesNotExist:
             messages.success(self.request, "Please wait. Second vote is not ready.")
             return redirect("votes:edit", pk=self.object.pk)
@@ -295,3 +369,42 @@ def chart_data(request, pk):
         }
 
     return JsonResponse(chart)
+
+
+
+# Just for testing.
+@method_decorator(teacher_required, name='dispatch')
+class ResponseStatusView(ListView):
+        def get(self, request, *args, **kwargs):
+            response_list = Response.objects.filter(question = kwargs["pk"]).order_by('student')
+            student_list = Student.objects.all()
+            #question = get_object_or_404(Question, pk=kwargs["pk"])   
+            return render(request,
+                "votes/response_list.html",
+                {"response_list": response_list,"student_list": student_list})
+
+
+def createAttendance(student, status):
+    
+    try: 
+        AttendanceInstance.objects.get(student = student, datestamp = datetime.date.today())
+
+    except ObjectDoesNotExist:
+    
+        try:
+            attendance = AttendanceInstance(student = student)
+
+            if status is True:
+                attendance.status = True
+            else:
+                attendance.status = False
+
+            ## for making attendance instace
+            #attendance.datestamp = date
+
+            attendance.save()
+
+        except:
+            print('There was a problem creating the user')
+
+

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %} HomeWork | {{block.super}} {% endblock %}
+
+{% block content %}
+    <div class="callout clearfix">
+        <h5 class="subheader text-left"> Engineering Mathematics </h5>
+        <h4 class="text-center"><u><strong>Pre-Class Homework {{hw.title}}</strong></u></h4>
+	<h6 class="text-right">  <strong>Due: {{ hw.due_date }} </strong> </h6>
+    </div>
+
+    
+    <h5><u>Optional Reading: {{ hw.optional_readings }}</u> </h5>
+    <h5><strong>Video Clips & Reading:</strong> </h5>
+    <ol id="video_list">     
+    </ol>
+
+    <h5><strong>Questions:</strong> </h5>
+    <p> {{ hw.questions|safe }} </p>
+        <!-- <img src="{{hw.quetions_image.url}}"> -->
+    <br><br>    <br><br>
+    <p class="text-right"> <u>Submit your answer through this link:</u>
+    <button class="button" onClick = "window.open('{{google_forms_url}} {{hw.title}}')" >
+        Link</button>
+    </p>
+
+
+
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+
+        var vl = document.getElementById('video_list');
+        
+        if("{{hw.video_clip_name_1}}"!= "None"){
+            var li = document.createElement("li");
+            var a_elemet = document.createElement("a");
+            a_elemet.setAttribute("href","{{hw.video_clip_link_1}}");
+            a_elemet.setAttribute("target", "_blank");
+            a_elemet.setAttribute("vd_no", "1");    
+            a_elemet.appendChild(document.createTextNode("{{hw.video_clip_name_1}}"));
+
+            li.appendChild(a_elemet);
+            vl.appendChild(li);
+        }
+
+        if("{{hw.video_clip_name_2}}"!= "None"){
+            var li = document.createElement("li");
+            var a_elemet = document.createElement("a");
+            a_elemet.setAttribute("href","{{hw.video_clip_link_2}}");
+            a_elemet.setAttribute("target", "_blank");
+            a_elemet.setAttribute("vd_no", "2");    
+            a_elemet.appendChild(document.createTextNode("{{hw.video_clip_name_2}}"));
+
+            li.appendChild(a_elemet);
+            vl.appendChild(li);
+        }       
+        
+        if("{{hw.video_clip_name_3}}"!= "None"){
+            var li = document.createElement("li");
+            var a_elemet = document.createElement("a");
+            a_elemet.setAttribute("href","{{hw.video_clip_link_3}}");
+            a_elemet.setAttribute("target", "_blank");
+            a_elemet.setAttribute("vd_no", "3");    
+            a_elemet.appendChild(document.createTextNode("{{hw.video_clip_name_3}}"));
+
+            li.appendChild(a_elemet);
+            vl.appendChild(li);
+        }
+
+
+
+
+
+        $(document).ready(function(){
+           $("a").click(function(){
+                //alert("You've clicked the link.");
+                var vd_no = "video_"+$(this).attr("vd_no");
+                $.ajax({
+                    url:'/homework/api/v1/start',
+                    data: {
+                            user_id:"{{user.username}}",
+                            hw_name : "{{hw.title}}",
+                            type : vd_no     
+                    }, 
+                    success:function(data){
+                        
+                    },
+                    error:function(e){  
+                        alert(e.responseText);  
+                    }
+                })
+                
+           });
+        });
+    </script>
+
+{% endblock %}

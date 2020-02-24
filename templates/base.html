@@ -9,11 +9,30 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %} Stochastic Dynamics Lab {% endblock %}</title>
+    <title>{% block title %} Learning Lab {% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/foundation.css' %}">
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" 
+    integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/custom_alex.css' %}">
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true
+        }
+      });
+    </script>
+    
+    <script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+    {% block stylesheets %}
+    {% endblock stylesheets %}
     {% mathjax_scripts %}
+
   </head>
   <body>
     <header>
@@ -68,6 +87,11 @@
               <li><a href="{% url 'courses:list' %}">Courses</a></li>
               <li class="disabled">Questions</a></li>
               <li><a href="{% url 'votes:voting' %}">Voting</a></li>
+              <li><a href="{% url 'grade:student_mypage' %}">MyPage</a></li>
+              <li><a href="{% url 'homework:homework_list' %}">Homework</a></li>
+              {% if user.is_staff %}
+                <li><a href="{% url 'homework:homework_tracker' %}">Homework Tracker</a></li>
+              {% endif%}
             </ul>
           </nav>
         </div>
@@ -78,6 +102,7 @@
     <div class="grid-container">
       <div class="grid-x grid-padding-x">
       </div>
+      
       {% if messages %}
             <div class="row">
                 <div class="small-6 small-centered columns">
@@ -91,10 +116,13 @@
             </div>
             </div>
       {% endif %}
+
       <div class="grid-container">
         <div class="grid-x grid-padding-x">
           <div class="large-12 cell">
-          {% block content %}{% endblock %}
+          {% block content %}
+          
+          {% endblock %}
           </div>
         </div>
       </div>
@@ -112,6 +140,8 @@
     <script src="{% static 'js/vendor/what-input.js' %}"></script>
     <script src="{% static 'js/vendor/foundation.js' %}"></script>
     <script src="{% static 'js/app.js' %}"></script>
-    {% block javascript %}{% endblock %}
+    
+    {% block javascript %}
+    {% endblock %}
   </body>
 </html>

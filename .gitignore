@@ -1,5 +1,6 @@
 # Passwd file
 secrets.json
+*password*
 
 # Text backup files
 *.bak
@@ -12,6 +13,15 @@ db.sqlite3
 __pycache__
 /venv
 /static
-/media
+#/media
 /.vscode
 .DS_Store
+
+# My files
+accounts_list.csv
+major_list.csv
+em2_*.csv
+
+# Txt files
+students_to_delete.txt
+

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+
+{% block title %} HomeWork | {{block.super}} {% endblock %}
+
+{% block content %}
+
+    <h2>Homework Tracker</h2>
+
+    <h4>Course</h4>
+    <select name="course_list" id="sel" onchange="chageLangSelect()" >
+        <option>Select Course</option>
+        {% for s in course_list %}
+            <option value="{{s.pk}}">{{s}}</option>
+        {% endfor %}
+    </select>
+
+    <h4>pre-class Number</h4>
+    <select name="hw_list" id="hw_list">
+
+    </select>
+
+    <button type="button" id="btn_show">Check</button>
+
+    <br><br><br>
+    <table>
+        <thead>
+        <tr>
+          <th>Student Id</th>
+          <th>Video 1</th>
+          <th>Video 2</th>
+          <th>Video 3</th>
+        </tr>
+        </thead>
+        <tbody id="result_table">
+
+
+        </tbody>
+
+    </table>
+
+
+
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+
+        function chageLangSelect(){            
+            // fetch homework list corresponding to sectoin & course
+            var sel = document.getElementById("sel");
+            var course_no = sel.options[sel.selectedIndex].value;
+
+            fetch("api/v1/homework/list/"+course_no) 
+            .then(function(response){
+                return response.json();
+            })
+            .then(function(res){
+                // Add homework list to hw_list 
+                var hw_list = document.getElementById("hw_list");
+                ress = JSON.parse(res)
+
+                hw_list.innerHTML = '';
+                $.each(ress, function(key, value){
+
+                    var x = document.createElement("OPTION");
+                    x.setAttribute("value", value["pk"]);
+                    var t = document.createTextNode(value["fields"]["title"]);
+                    x.appendChild(t);
+                    hw_list.appendChild(x);
+                });
+            });
+        }
+
+        $("#btn_show").click(function() {
+            var sel = document.getElementById("sel");
+            var course_no = sel.options[sel.selectedIndex].value;
+
+            var sel = document.getElementById("hw_list");
+            var hw_no = sel.options[sel.selectedIndex].value;
+
+            $("#result_table").empty();
+
+            //$("#result_table")
+            // fetch student info & homework time  
+            fetch("api/v1/homework/check/"+course_no+"/"+hw_no)
+            .then(function(res){
+                if(res.ok){
+                    res.json().then(function(data){
+                        j_data = $.parseJSON(data);
+                        for(var a in j_data){
+                            //console.log(j_data[a]);
+
+                            var trr = document.createElement('tr');
+                            for(var k in j_data[a]){
+                                var tdd = document.createElement('td');
+                                if(j_data[a][k] == "None"){
+                                    tdd.innerHTML = "-";
+                                }else{
+                                    tdd.innerHTML = j_data[a][k];
+                                }
+                                trr.appendChild(tdd);
+                            }
+
+
+                            // trr.appendChild(document.createElement('td').appendChild(document.createTextNode(j_data[a][0])));
+                            // trr.appendChild(document.createElement('td').appendChild(document.createTextNode(j_data[a][1])));
+                            // trr.appendChild(document.createElement('td').appendChild(document.createTextNode(j_data[a][2])));
+                            // trr.appendChild(document.createElement('td').appendChild(document.createTextNode(j_data[a][3])));
+
+                            $("#result_table").append(trr);
+                        }
+                        
+                    })
+                }
+            });
+            
+            
+        });
+
+    </script>
+
+{% endblock %}

@@ -41,7 +41,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["sdl.skku.edu", "127.0.0.1"]
 
@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     'courses',
     'accounts',
     'votes',
+    'grade',
+    'homework',
     # wagtail
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -76,6 +78,7 @@ INSTALLED_APPS = [
     'taggit',
 
     'blogs',
+
 ]
 
 # MathJax

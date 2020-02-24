@@ -1,10 +1,17 @@
 import os, sys
 import csv
 
-proj_path = "/home/jun/learninglab/"
+proj_path = "/home/jun/learninglab"
 # This is so Django knows where to find stuff.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.production")
 sys.path.append(proj_path)
+
+###########################
+# # for 2019 summer project
+# proj_path = "/Users/Bambiz/Dev/git/voting-app-new/voting-app/"
+# # This is so Django knows where to find stuff.
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "learninglab.settings.local")
+# sys.path.append(proj_path)
 
 # This is so my local_settings.py gets loaded.
 os.chdir(proj_path)
@@ -22,22 +29,23 @@ from courses.models import Section, Group
 User = get_user_model()
 
 ### group or user? ###
-switch = 2
+switch = 3
 
 ### Course Info ###
 year = 2019
-title = "EM 1"
+# title = "E"
+title = "Engineering Mathematics 2"
 
 if switch == 1:
     #########################
     ##### create groups #####
     #########################
-    """ 
+    """
     Sections are already created manually using admin mode
 
     """
     class_no = [41, 42, 43, 44]
-    number_of_groups = [16, 16, 16, 16]
+    number_of_groups = [16, 17, 16, 16]
 
     # section = models.Section.objects.get(section_no=41, course__year=year, course__title=title)
     # models.Group.objects.create(section=section, group_no=2)
@@ -48,17 +56,75 @@ if switch == 1:
             Group.objects.create(section=section, group_no=g_number + 1)
 
 if switch == 2:
+    #########################
+    ##### create majors #####
+    #########################
+    with open("./em2_major.csv",encoding = 'CP949') as f:
+        majors = []
+        for line in csv.reader(f):
+            line = "".join(line)
+            majors.append(line)
+
+    for major in majors:
+        Major.objects.create(title=major)
+
+if switch == 3:
     #################################
     ##### create user instances ######
     #################################
     # import users from csv file
-    with open('/home/jun/Downloads/em1_2019_django_account.csv') as f:
+    with open("./em2_student.csv", encoding = 'CP949') as f:
         users = [tuple(line) for line in csv.reader(f)]
-
     # print(users)
+
+
+
+    ### check for existing, deleted or modified students.
+    student_all = Student.objects.all()
+    txtf = open("./students_to_delete.txt",'w')
+
+    # if students delete course, show them on a txt file
+    for student in student_all:
+        exist_flag = 0
+        for username, password, student_no, name, major, section, group in users:
+            if student.get_username() == username:
+                exist_flag = 1
+        if exist_flag == 0:
+            txtf.write(str(student.student_no) + '\t' + student.name + '\t' + student.get_username() + '\n')
+            print("students to delete : " + str(student.student_no) + '\t' + student.name + '\t' + student.get_username())
+
+    txtf.close()
+
+
+
+
 
     # create users
     for username, password, student_no, name, major, section, group in users:
+
+
+        if username == "" :      # End of File. break.
+            break
+
+        # if student exist, skip.
+        # if student is modified, apply changes in section.
+        no_insert_flag = 0
+        for student in student_all:
+            if student.get_username() == username:
+                no_insert_flag = 1       # don't create user.         
+
+                if (student.section.section_no != int(section)) or (student.group.group_no != int(group)):
+                    student.section = Section.objects.get(section_no=section, course__year=year, course__title=title)
+                    student.group = Group.objects.get(section__section_no=section, section__course__year=year, section__course__title=title, group_no=group)
+                    student.save()
+                    print(student.name + " is successfully modified")
+                else:
+                    print(student.name + " has no change")
+
+
+        if no_insert_flag == 1:    # skips to next.
+            continue
+
         try:
             print('Creating user {0}.'.format(username))
             user = User.objects.create_user(username=username)
