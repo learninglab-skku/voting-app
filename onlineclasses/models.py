@@ -23,6 +23,7 @@ class Video(models.Model):
 
 
 class VideoTracker(models.Model):
+
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
     video = models.ForeignKey(Video, on_delete=models.CASCADE, null=True)
 
@@ -39,9 +40,9 @@ class VideoTracker(models.Model):
 
 
 class DiscussionLink(models.Model):
-	group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
-	video = models.ForeignKey(Video, on_delete=models.CASCADE, null=True)
-	link = models.CharField(max_length = 255, null = True, blank = True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, null=True)
+    link = models.CharField(max_length = 255, null = True, blank = True)
 
-	def __str__(self):
-		return f"{self.group.section} in ({self.video.question})"
+    def __str__(self):
+        return f"{self.group.section} in ({self.video.question})"

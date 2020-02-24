@@ -109,6 +109,8 @@ import json
 
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+# get DB_PASS from password file
 with open(os.getcwd()+'/learninglab/settings/db_password.json') as file:    
     DB_PASS = json.load(file)["DB_PASSWORD"]
 
@@ -116,7 +118,7 @@ with open(os.getcwd()+'/learninglab/settings/db_password.json') as file:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'llab',
+        'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': DB_PASS,
         'HOST': 'localhost',

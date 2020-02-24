@@ -157,7 +157,7 @@ class VideoDetailView(CreateView):
 		return redirect("onlineclasses:detail", pk=kwargs["pk"],lecture_pk = video.lecture.pk)
 
 
-
+@method_decorator(student_required, name='dispatch')
 class VideoListView(View):
 
     def get(self, request, *args, **kwargs):

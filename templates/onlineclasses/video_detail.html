@@ -7,7 +7,7 @@
     <!--script type="text/javascript" src="querydata.js"></script-->
     <script type="text/javascript">
 
-
+    // Every 5 seconds send an ajax request to update the screen
     setInterval(function () {
 
 
@@ -18,11 +18,17 @@
             headers: {'X-CSRFToken': '{{ csrf_token }}'},
      
             success: function (data) {
-                // alert("help: "+JSON.stringify(data));
+                //alert("help: "+JSON.stringify(data));
                 if (data.vote1) {
+                    //update first vote status
                     document.getElementById("vote1check").innerHTML = data.vote1 + "/" + data.total + " has voted.";
                     if(data.vote1 == data.total){
-                        document.getElementById("_discussion_submit").disabled=false;
+                        // if not leader, there is no discussion submit button. so skip exception with try & catch
+                        try {
+                                document.getElementById("_discussion_submit").disabled=false;
+                        } catch (e) {
+
+                        }
                     }
                 }
 
@@ -31,6 +37,7 @@
                 }
 
                 if (data.vote2) {
+                    //update second vote status
                     document.getElementById("vote2check").innerHTML = data.vote2 + "/" + data.total + " has voted.";
                     if(data.vote2 == data.total){
                         document.getElementById("proceed").disabled=false;
