@@ -66,10 +66,9 @@ INSTALLED_APPS = [
     'courses',
     'accounts',
     'votes',
-    'homework',
     'django_extensions',
     'grade',
-    
+    'onlineclasses',
 ]
 
 MIDDLEWARE = [

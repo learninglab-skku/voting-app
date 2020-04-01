@@ -35,7 +35,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('courses/', include('courses.urls')),
     path('votes/', include('votes.urls')),
-    path('homework/', include('homework.urls')),
+    # path('homework/', include('homework.urls')),
     path('grade/', include('grade.urls')),
     path('onlineclasses/', include('onlineclasses.urls')),
     # wagtail
