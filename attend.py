@@ -26,8 +26,8 @@ YEAR = 2019
 spring = range(3,7)
 fall = range(9,13)
 classes = ['TUESDAY', 'THURSDAY']
-filename = "41.xls"
-section_number = 41
+filename = "44.xlsx"
+section_number = 44
 semester = fall
 
 # prepare Excel file for reading
