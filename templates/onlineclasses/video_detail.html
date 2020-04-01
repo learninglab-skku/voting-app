@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %} Video Detail | {{block.super}} {% endblock %}
+
+{% block javascript %}
+
+    <!--script type="text/javascript" src="querydata.js"></script-->
+    <script type="text/javascript">
+
+    // Every 5 seconds send an ajax request to update the screen
+    setInterval(function () {
+
+
+        $.ajax({
+            url: "{{ request.path }}/ajax/check_vote",
+            type: 'POST',
+            data: {'check': true},
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+     
+            success: function (data) {
+                //alert("help: "+JSON.stringify(data));
+                if (data.vote1) {
+                    //update first vote status
+                    document.getElementById("vote1check").innerHTML = data.vote1 + "/" + data.total + " has voted.";
+                    if(data.vote1 == data.total){
+                        // if not leader, there is no discussion submit button. so skip exception with try & catch
+                        try {
+                                document.getElementById("_discussion_submit").disabled=false;
+                        } catch (e) {
+
+                        }
+                    }
+                }
+
+                if(data.discussion){
+                    document.getElementById("_second_submit").disabled=false;
+                }
+
+                if (data.vote2) {
+                    //update second vote status
+                    document.getElementById("vote2check").innerHTML = data.vote2 + "/" + data.total + " has voted.";
+                    if(data.vote2 == data.total){
+                        document.getElementById("proceed").disabled=false;
+                    }
+                }
+
+
+            },
+
+            error: function(request,status,error){
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            }
+        });
+    }, 5000);
+
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+    <hr>
+    <div id="votingCount">
+
+    </div>
+    <p>
+        <!-- only the http address should be inserted in the video link -->
+        <iframe width="560" height="315" src="{{video.video_link}}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </p>
+
+    <br>
+
+    <div class="row">
+        <div class="small-4 columns">
+            <label><h3><b>{{ video.question.title }}</b></h3></label>
+            <img src="{{ video.question.contents.url }}">
+        </div>
+    </div>
+
+    <br><br><br>
+
+    <div class = "row">
+        <div class="grid-x grid-padding-x">
+            <div>
+
+                <!-- First Vote
+                <input type="submit", class="success button", value="1st Vote", name="submit_1st_vote">-->                
+                <form action="", method="POST">
+                    {% csrf_token %}
+                    <label>First Vote</label>
+                    <div class="input-group">
+                        <div class="input-group-field">
+                            <select name="first_vote">
+                                <option value="">Select...</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                
+                            </select>
+                        </div>
+                        <div class = "input-group-field">
+                            <input type="submit" class="button" value="Submit" name = "_first_submit" id = "_first_submit">
+                        </div>
+                        <div class = "input-group-field">
+                            <h5 style='color:#483D8B' id="vote1check"></h5>
+                        </div>         
+                    </div>           
+
+                </form>
+
+                <!-- Submit Discussion
+                <input type="submit", class="button", value="Discussion Download Link", name="submit_link">-->
+
+                {% if student.is_leader %}
+                <form action="", method="POST">
+                    {% csrf_token %}
+
+                    <label>Discussion Upload Link</label>
+                    <div class ="input-group">
+                        <input class = "input-group-field" type = "text" placeholder="Enter Link.." name="discussion_link">
+                        <div class = "input-group-button">
+                            <input type="submit" class="button" value="Submit" name = "_discussion_submit" id = "_discussion_submit"
+                            {% if not response %}
+                            disabled
+                            {% endif %}
+                            >
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+
+
+                <!-- Second Vote
+                <input type="submit", class="secondary button", value="2nd Vote", name="submit_2nd_vote">-->
+                <form action="", method="POST">
+                    {% csrf_token %}
+                    <label>Second Vote</label>
+                    <div class ="input-group">
+                        <div class="input-group-field">
+                            <select name="second_vote">
+                                <option value="">Select after discussion...</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                        <div class = "input-group-field">
+                            <input type="submit" class="button" value="Submit" name = "_second_submit" id = "_second_submit"
+                            {% if not discussion %}
+                            disabled
+                            {% endif %}
+                                >
+                        </div>
+                        <div class = "input-group-field">
+                            <h5 style='color:#483D8B' id="vote2check"></h5>
+                        </div>
+                    </div>
+
+                    <br><br>
+                </form>
+
+                <form action="", method="POST">
+                    {% csrf_token %}
+
+
+                    <!-- Next Video -->
+                    <div>
+                        <input type="submit", class="alert button", value="Proceed", name="proceed", id="proceed"
+                        {% if not response2 %}
+                        disabled
+                        {% endif %}
+                        >
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div> 
+
+
+
+<!--script type="text/javascript">
+
+    setTimeout(function() {
+      location.reload();
+    }, 5000);
+
+</script-->
+
+{% endblock %}

@@ -15,7 +15,7 @@ db.sqlite3
 __pycache__
 /venv
 /static
-/media
+#/media
 /.vscode
 .DS_Store
 

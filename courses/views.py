@@ -6,12 +6,14 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView, DetailView, 
-    CreateView, UpdateView, DeleteView
+    CreateView, UpdateView, DeleteView, View
 )
 
 from . import mixins
 from . import models
 from learninglab.decorators import student_required, teacher_required
+
+from django.shortcuts import render
 
 
 # @method_decorator(login_required, name='dispatch')
@@ -22,6 +24,16 @@ class CourseListView(ListView):
 # @method_decorator(login_required, name='dispatch')
 class CourseDetailView(DetailView):
     model = models.Course
+
+class LectureListView(View):
+
+    def get(self, request, *args, **kwargs):
+        lecture_list = models.Lecture.objects.filter(course = kwargs["course_pk"])
+
+        return render(request,
+            "courses/lecture_list.html",
+            {"lecture_list": lecture_list})
+
 
 
 @method_decorator(teacher_required, name='dispatch')

@@ -2,7 +2,6 @@ import datetime
 from django.db import models
 from django.urls import reverse
 
-
 class Course(models.Model):
     YEAR_CHOICES = []
     for r in range(2016, (datetime.datetime.now().year + 2)):
@@ -23,7 +22,7 @@ class Course(models.Model):
         return f"{self.title}: {self.semester}, {self.year}"
 
     def get_absolute_url(self):
-        return reverse('courses:detail', kwargs={'pk': self.pk})
+        return reverse('courses:lecture_list', kwargs={'course_pk': self.pk})
 
 
 class Lecture(models.Model):
@@ -34,6 +33,14 @@ class Lecture(models.Model):
 
     class Meta:
         ordering = ['order', ]
+
+    def get_absolute_url(self):
+        from onlineclasses.models import Video
+        video_set = Video.objects.filter(lecture = self, index = 1)
+        if not video_set:
+            return
+        video = video_set.first()
+        return reverse('onlineclasses:detail', kwargs={'lecture_pk': self.pk, 'pk':video.pk})
 
     def __str__(self):
         return f"Lecture {self.order} ({self.course.title})"
@@ -52,4 +59,4 @@ class Group(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, default=41)
 
     def __str__(self):
-        return f"{self.group_no}"
+        return f"{self.group_no} in {self.section}"
