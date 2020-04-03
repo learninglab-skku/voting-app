@@ -144,6 +144,11 @@ class VideoDetailView(CreateView):
 
 				return redirect("onlineclasses:detail", pk=next_video.pk,lecture_pk = video.lecture.pk)
 
+		# participant number
+		elif request.POST.get("part_number") is not None:
+			cur_student.group.tmp_no = request.POST.get("part_number")
+			cur_student.group.save()
+
 		#test
 		# if request.POST.get("asdf") is not None:
 		# 	messages.warning(request,"this is sent from asdf")
@@ -156,8 +161,8 @@ class VideoDetailView(CreateView):
 
 		return redirect("onlineclasses:detail", pk=kwargs["pk"],lecture_pk = video.lecture.pk)
 
-
-@method_decorator(student_required, name='dispatch')
+# Block student access to the list - answer video is also listed.
+@method_decorator(teacher_required, name='dispatch')
 class VideoListView(View):
 
     def get(self, request, *args, **kwargs):
@@ -173,8 +178,13 @@ class CheckVoteView(View):
 	def post(self, request, *args, **kwargs):
 		cur_student = request.user.student
 		video = Video.objects.get(pk = kwargs["pk"])
+		group_count = groupCount(request,video,cur_student)
+
+		if cur_student.group.tmp_no != 0:
+			group_count = cur_student.group.tmp_no
+
 		#data = {'status' : groupCheckFirstVote(request,video,cur_student)}
-		data = {'total' : groupCount(request,video,cur_student),
+		data = {'total' : group_count,
 				'vote1' : groupCountFirstVote(request,video,cur_student),
 				'vote2' : groupCountSecondVote(request,video,cur_student),
 				'discussion' : groupCheckDiscussion(request,video,cur_student)
@@ -199,6 +209,7 @@ def groupCheckFirstVote(request, video, student):
 
 	#group_members contains the student objects for a single group
 	group_members=Student.objects.filter(group=group)
+	count = 0
 	pass_flag = True
 
 	if not group_members:
@@ -208,14 +219,14 @@ def groupCheckFirstVote(request, video, student):
 	#Check if each student has done their first vote.
 	#Some Students might not have a Response instance at all.
 	for each_student in group_members:
-		#messages.info(request,str(each_student))
+		# messages.info(request,str(each_student))
 		each_response = Response.objects.filter(student=each_student,question=video.question)
-		#messages.info(request,str(each_student)+' '+str(each_response.first().vote1))
+		# messages.info(request, str(len(each_response)))
+		# messages.info(request,str(each_student)+' '+str(each_response.first().vote1))
 
 		# If there is no response yet.
 		if not each_response :
 			pass_flag = False
-			return pass_flag
 
 		# If there is no vote1 yet.
 		try:
@@ -223,12 +234,16 @@ def groupCheckFirstVote(request, video, student):
 				pass_flag = False
 		except:
 			pass_flag = False
-			return pass_flag
+
+		# count += 1
 
 			# add messages.warning here!
+	count = groupCountFirstVote(request, video, student)
+	if group.tmp_no != 0:
+		if group.tmp_no <= count:
+			return True
 
-
-
+	# messages.info(request, str(count))
 	return pass_flag
 
 
@@ -254,7 +269,12 @@ def groupCountFirstVote(request, video, student):
 	for each_student in group_members:
 		#messages.info(request,str(each_student))
 		each_response = Response.objects.filter(student=each_student,question=video.question)
-		#messages.info(request,str(each_student)+' '+str(each_response.first().vote1))
+		# messages.info(request,str(each_student)+' '+str(each_response.first().vote1))
+
+		# added by Jun
+		if each_response:
+			if each_response.first().vote1 != 0:
+				voted += 1
 
 		# If there is no response yet.
 		if not each_response :
@@ -274,7 +294,7 @@ def groupCountFirstVote(request, video, student):
 			continue
 
 		# If voted, append 1
-		voted += 1
+		# voted += 1
 
 			# add messages.warning here!
 
@@ -290,11 +310,12 @@ def groupCheckSecondVote(request, video, student):
 
 	#group_members contains the student objects for a single group
 	group_members=Student.objects.filter(group=group)
+	count = 0
 	pass_flag = True
 
 	if not group_members:
 		messages.warning(request,"group_members is None!")
-		return
+		return False
 
 	#Check if each student has done their first vote.
 	#Some Students might not have a Response instance at all.
@@ -306,23 +327,27 @@ def groupCheckSecondVote(request, video, student):
 		# If there is no response yet.
 		if not each_response :
 			pass_flag = False
-			return pass_flag
 
 		# If there is no vote1 yet.
 		try:
+			# messages.info(request,str(each_student)+' '+str(each_response.first().vote2))
 			if each_response.first().vote2 is 0:
-				pass_flag=False
-				continue
+				pass_flag = False
 		except:
 			pass_flag = False
-			return pass_flag
 
+		# count += 1
+
+	count = groupCountSecondVote(request, video, student)
 			# add messages.warning here!
-
+	# messages.info(request,str(group.tmp_no))
+	# messages.info(request,str(count))
+	if group.tmp_no != 0:
+		if group.tmp_no <= count:
+			return True
 
 
 	return pass_flag
-
 
 # Group is unique for each group!
 def groupCountSecondVote(request, video, student):
@@ -348,6 +373,11 @@ def groupCountSecondVote(request, video, student):
 		each_response = Response.objects.filter(student=each_student,question=video.question)
 		#messages.info(request,str(each_student)+' '+str(each_response.first().vote1))
 
+		# added by Jun
+		if each_response:
+			if each_response.first().vote2 != 0:
+				voted += 1
+
 		# If there is no response yet.
 		if not each_response :
 			pass_flag = False
@@ -366,7 +396,7 @@ def groupCountSecondVote(request, video, student):
 			continue
 
 		# If voted, append 1
-		voted += 1
+		# voted += 1
 
 			# add messages.warning here!
 

@@ -14,6 +14,7 @@ class Video(models.Model):
     lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE, null=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
     index = models.IntegerField(default = 1)
+    is_explanation = models.BooleanField(default = False)
 
     def __str__(self):
         return f"{self.video_name} ({self.lecture}, {self.course})"

@@ -32,9 +32,9 @@ User = get_user_model()
 switch = 3
 
 ### Course Info ###
-year = 2019
+year = 2020
 # title = "E"
-title = "Engineering Mathematics 2"
+title = "Engineering Mathematics 1"
 
 if switch == 1:
     #########################
@@ -59,7 +59,7 @@ if switch == 2:
     #########################
     ##### create majors #####
     #########################
-    with open("./em2_major.csv",encoding = 'CP949') as f:
+    with open("./em2_major.csv",encoding = 'UTF8') as f:
         majors = []
         for line in csv.reader(f):
             line = "".join(line)
@@ -73,7 +73,7 @@ if switch == 3:
     ##### create user instances ######
     #################################
     # import users from csv file
-    with open("./em2_student.csv", encoding = 'CP949') as f:
+    with open("./em2_student.csv", encoding = 'UTF8') as f:
         users = [tuple(line) for line in csv.reader(f)]
     # print(users)
 
