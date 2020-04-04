@@ -69,14 +69,13 @@
     </p>
 
     <br>
-    {% if not video.is_explanation %}
     <div class="row">
         <div class="small-4 columns">
             <label><h3><b>{{ video.question.title }}</b></h3></label>
             <img src="{{ video.question.contents.url }}">
         </div>
     </div>
-
+    {% if not video.is_explanation %}
     <br><br><br>
     
     <div class = "row">

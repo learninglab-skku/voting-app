@@ -23,6 +23,7 @@ __pycache__
 accounts_list.csv
 major_list.csv
 em2_*.csv
+em1_*.csv
 
 # Txt files
 students_to_delete.txt

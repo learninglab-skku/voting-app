@@ -45,7 +45,7 @@ if switch == 1:
 
     """
     class_no = [41, 42, 43, 44]
-    number_of_groups = [16, 17, 16, 16]
+    number_of_groups = [13, 14, 15, 17]
 
     # section = models.Section.objects.get(section_no=41, course__year=year, course__title=title)
     # models.Group.objects.create(section=section, group_no=2)
@@ -59,7 +59,7 @@ if switch == 2:
     #########################
     ##### create majors #####
     #########################
-    with open("./em2_major.csv",encoding = 'UTF8') as f:
+    with open("./em1_major.csv",encoding = 'UTF8') as f:
         majors = []
         for line in csv.reader(f):
             line = "".join(line)
@@ -73,7 +73,7 @@ if switch == 3:
     ##### create user instances ######
     #################################
     # import users from csv file
-    with open("./em2_student.csv", encoding = 'UTF8') as f:
+    with open("./em1_student.csv", encoding = 'UTF8') as f:
         users = [tuple(line) for line in csv.reader(f)]
     # print(users)
 
@@ -86,7 +86,7 @@ if switch == 3:
     # if students delete course, show them on a txt file
     for student in student_all:
         exist_flag = 0
-        for username, password, student_no, name, major, section, group in users:
+        for username, password, student_no, name, major, section, group, is_leader in users:
             if student.get_username() == username:
                 exist_flag = 1
         if exist_flag == 0:
@@ -100,7 +100,7 @@ if switch == 3:
 
 
     # create users
-    for username, password, student_no, name, major, section, group in users:
+    for username, password, student_no, name, major, section, group, is_leader in users:
 
 
         if username == "" :      # End of File. break.
@@ -143,6 +143,7 @@ if switch == 3:
             student.major = Major.objects.get(title=major)
             student.section = Section.objects.get(section_no=section, course__year=year, course__title=title)
             student.group = Group.objects.get(section__section_no=section, section__course__year=year, section__course__title=title, group_no=group)
+            student.is_leader = is_leader
             student.save()
 
         except:

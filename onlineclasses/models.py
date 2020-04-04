@@ -14,6 +14,7 @@ class Video(models.Model):
     lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE, null=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
     index = models.IntegerField(default = 1)
+    # use the following flag for videos for explantion and on-board activities.
     is_explanation = models.BooleanField(default = False)
 
     def __str__(self):
