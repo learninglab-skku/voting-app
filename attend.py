@@ -26,7 +26,7 @@ YEAR = 2019
 spring = range(3,7)
 fall = range(9,13)
 classes = ['TUESDAY', 'THURSDAY']
-filename = "41.xls"
+filename = "41.xlsx"
 section_number = 41
 semester = fall
 
