@@ -55,8 +55,8 @@ class VideoDetailView(CreateView):
 		#disable submit button if check is not successful
 		cur_response = groupCheckFirstVote(request,video,cur_student)
 		cur_discussion = groupCheckDiscussion(request,video,cur_student)
-		cur_response2 = groupCheckSecondVote(request,video,cur_student)
-
+		# cur_response2 = groupCheckSecondVote(request,video,cur_student)
+		cur_response2 = groupCountSecondVote(request,video,cur_student)>=cur_student.group.tmp_no
 
 		return render(request,
             "onlineclasses/video_detail.html",
@@ -134,6 +134,8 @@ class VideoDetailView(CreateView):
 
 		# On Next Video.
 		elif "proceed" in self.request.POST:
+			cur_student.group.tmp_no = groupCountSecondVote(request,video,cur_student)
+			cur_student.group.save()
 			next_video = checkLastVideo(request,video)
 			if next_video is None: # None stands for true
 				createAttendance(cur_student,True)
