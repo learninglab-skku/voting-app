@@ -34,7 +34,7 @@ switch = 3
 ### Course Info ###
 year = 2020
 # title = "E"
-title = "Engineering Mathematics 1"
+title = "Engineering Mathematics 2"
 
 if switch == 1:
     #########################
@@ -42,10 +42,10 @@ if switch == 1:
     #########################
     """
     Sections are already created manually using admin mode
-
+    - need to modify to avoid duplicate groups.
     """
     class_no = [41, 42, 43, 44]
-    number_of_groups = [13, 14, 15, 17]
+    number_of_groups = [12, 10, 9, 14]
 
     # section = models.Section.objects.get(section_no=41, course__year=year, course__title=title)
     # models.Group.objects.create(section=section, group_no=2)
@@ -59,7 +59,7 @@ if switch == 2:
     #########################
     ##### create majors #####
     #########################
-    with open("./em1_major.csv",encoding = 'UTF8') as f:
+    with open("./em2_major.csv",encoding = 'UTF8') as f:
         majors = []
         for line in csv.reader(f):
             line = "".join(line)
@@ -73,7 +73,7 @@ if switch == 3:
     ##### create user instances ######
     #################################
     # import users from csv file
-    with open("./em1_student.csv", encoding = 'UTF8') as f:
+    with open("./em2_student_0902.csv", encoding = 'UTF8') as f:
         users = [tuple(line) for line in csv.reader(f)]
     # print(users)
 
@@ -83,7 +83,7 @@ if switch == 3:
     student_all = Student.objects.all()
     txtf = open("./students_to_delete.txt",'w')
 
-    # if students delete course, show them on a txt file
+    # if students drop the course, show them on a txt file
     for student in student_all:
         exist_flag = 0
         for username, password, student_no, name, major, section, group, is_leader in users:
