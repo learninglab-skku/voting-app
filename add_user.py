@@ -73,7 +73,7 @@ if switch == 3:
     ##### create user instances ######
     #################################
     # import users from csv file
-    with open("./em2_student_0902.csv", encoding = 'UTF8') as f:
+    with open("./zoom_group_908.csv", encoding = 'UTF8') as f:
         users = [tuple(line) for line in csv.reader(f)]
     # print(users)
 

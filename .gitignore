@@ -9,6 +9,7 @@ secrets.json
 db.sqlite3
 *.ipynb
 .ipynb_checkpoints
+*.csv
 
 *.pyc
 *~
